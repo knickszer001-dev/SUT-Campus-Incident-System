@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/web_notification.dart' as web_noti;
+import '../dispatcher/sound_alert_service.dart';
 
 /// Web Notification Watcher — v3
 /// ตรวจจับเหตุการณ์ + แชท + DM จาก Firestore แบบ real-time
@@ -30,6 +32,8 @@ class _WebNotificationWatcherState extends State<WebNotificationWatcher> {
   bool _firstAssignedLoad = true;
   final Map<String, Timestamp?> _lastMessageTimestamps = {};
   final Map<String, Timestamp?> _lastDmTimestamps = {};
+  final Map<String, String> _lastIncidentStatus = {};
+  final Map<String, String> _lastIncidentTimelineStatus = {};
 
   void _cleanupWatcher() {
     for (final sub in _subscriptions) {
@@ -40,6 +44,8 @@ class _WebNotificationWatcherState extends State<WebNotificationWatcher> {
     _firstAssignedLoad = true;
     _lastMessageTimestamps.clear();
     _lastDmTimestamps.clear();
+    _lastIncidentStatus.clear();
+    _lastIncidentTimelineStatus.clear();
     _userRole = null;
     _userId = null;
   }
@@ -47,18 +53,20 @@ class _WebNotificationWatcherState extends State<WebNotificationWatcher> {
   @override
   void initState() {
     super.initState();
-    if (kIsWeb) {
-      _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
-        _cleanupWatcher();
-        if (user != null) {
-          _initWatcher(user);
-        }
-      });
-    }
+    // ทำงานทุกแพลตฟอร์ม (Web, Windows, Mobile)
+    _authSubscription = FirebaseAuth.instance.authStateChanges().listen((user) {
+      _cleanupWatcher();
+      if (user != null) {
+        _initWatcher(user);
+      }
+    });
   }
 
   Future<void> _initWatcher(User user) async {
     _userId = user.uid;
+
+    // เริ่มต้น SoundAlertService สำหรับเล่นเสียงบน Windows/Mobile/Web
+    await SoundAlertService.initialize();
 
     // ดึง role ของ user
     try {
@@ -75,7 +83,7 @@ class _WebNotificationWatcherState extends State<WebNotificationWatcher> {
     if (!mounted) return;
     debugPrint('[WebNotiWatcher] Starting for role=$_userRole, uid=$_userId');
 
-    // ขอ browser notification permission
+    // ขอ browser notification permission (เฉพาะ Web)
     try {
       await web_noti.requestBrowserNotificationPermission();
     } catch (_) {}
@@ -89,6 +97,9 @@ class _WebNotificationWatcherState extends State<WebNotificationWatcher> {
     } else if (_userRole == 'responder') {
       _watchAssignedIncidents();
     }
+
+    // ทุก role: watch การอัปเดตสถานะ (Status / Timeline)
+    _watchStatusUpdates();
 
     // ทุก role: watch chat messages สำหรับ incidents ที่เกี่ยวข้อง
     _watchChatMessages();
@@ -251,26 +262,156 @@ class _WebNotificationWatcherState extends State<WebNotificationWatcher> {
   }
 
   // ================================================================
+  // Status Update Watcher
+  // ================================================================
+
+  /// Watch การอัปเดตสถานะหลัก และสถานะไทม์ไลน์ตาม Role ของผู้ใช้
+  void _watchStatusUpdates() {
+    if (_userId == null) return;
+
+    Query query = FirebaseFirestore.instance.collection('incidents');
+
+    // กรองเหตุการณ์ตาม Role เพื่อลดการเขียนอ่าน Firestore เกินจำเป็น
+    if (_userRole == 'user') {
+      // ผู้แจ้ง: ติดตามเฉพาะเหตุที่ตนเองแจ้ง
+      query = query.where('reporterId', isEqualTo: _userId);
+    } else if (_userRole == 'responder') {
+      // ผู้รับเคส: ติดตามเฉพาะเหตุที่ตนเองได้รับมอบหมาย
+      query = query.where('responderId', isEqualTo: _userId);
+    } else if (_userRole == 'dispatcher' || _userRole == 'admin') {
+      // Dispatcher/Admin: ติดตามเหตุทั้งหมดที่ยังดำเนินการอยู่
+      query = query.where('status', whereIn: ['NEW', 'IN_PROGRESS']);
+    } else {
+      return;
+    }
+
+    bool firstLoad = true;
+    final sub = query.snapshots().listen((snapshot) {
+      if (firstLoad) {
+        for (final doc in snapshot.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+          _lastIncidentStatus[doc.id] = data['status'] as String? ?? 'NEW';
+          _lastIncidentTimelineStatus[doc.id] = data['timelineStatus'] as String? ?? '';
+        }
+        firstLoad = false;
+        return;
+      }
+
+      for (final doc in snapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        final incidentId = doc.id;
+        final title = data['title'] as String? ?? 'เหตุการณ์';
+        final newStatus = data['status'] as String? ?? 'NEW';
+        final newTimeline = data['timelineStatus'] as String? ?? '';
+
+        final oldStatus = _lastIncidentStatus[incidentId];
+        final oldTimeline = _lastIncidentTimelineStatus[incidentId];
+
+        // 1. ตรวจสอบสถานะหลักเปลี่ยน (เช่น NEW -> IN_PROGRESS หรือ IN_PROGRESS -> RESOLVED)
+        if (oldStatus != null && oldStatus != newStatus) {
+          String statusText = _getStatusTextThai(newStatus);
+          _showAlert(
+            '🔄 อัปเดตสถานะเหตุการณ์',
+            'เหตุ "$title" เปลี่ยนสถานะเป็น: $statusText',
+            type: 'status_update',
+          );
+        }
+        // 2. ตรวจสอบสถานะไทม์ไลน์เปลี่ยน (เช่น ACCEPTED, EN_ROUTE, ARRIVED)
+        else if (oldTimeline != null && oldTimeline != newTimeline && newTimeline.isNotEmpty) {
+          String timelineText = _getTimelineTextThai(newTimeline);
+          _showAlert(
+            '📍 อัปเดตสถานะการปฏิบัติงาน',
+            'เหตุ "$title": $timelineText',
+            type: 'status_update',
+          );
+        }
+
+        _lastIncidentStatus[incidentId] = newStatus;
+        _lastIncidentTimelineStatus[incidentId] = newTimeline;
+      }
+    });
+
+    _subscriptions.add(sub);
+  }
+
+  String _getStatusTextThai(String status) {
+    switch (status) {
+      case 'NEW': return 'เหตุใหม่';
+      case 'IN_PROGRESS': return 'กำลังดำเนินการ';
+      case 'RESOLVED': return 'เสร็จสิ้น';
+      case 'CANCELLED': return 'ยกเลิก';
+      default: return status;
+    }
+  }
+
+  String _getTimelineTextThai(String timeline) {
+    switch (timeline) {
+      case 'REPORTED': return 'รายงานเหตุแล้ว';
+      case 'ACCEPTED': return 'รับเคสแล้ว';
+      case 'EN_ROUTE': return 'กำลังเดินทาง';
+      case 'ARRIVED': return 'ถึงที่เกิดเหตุแล้ว';
+      case 'RESOLVED': return 'เสร็จสิ้นภารกิจ';
+      default: return timeline;
+    }
+  }
+
+  // ================================================================
   // Alert Display
   // ================================================================
 
   void _showAlert(String title, String body, {String type = 'incident'}) {
-    // Browser notification (ทำงานแม้ tab ไม่ active)
-    web_noti.showBrowserNotification(title, body);
+    // 1. Browser notification (ทำงานเฉพาะ Web)
+    if (kIsWeb) {
+      web_noti.showBrowserNotification(title, body);
+    }
 
-    // เสียงแยกประเภท: เหตุใหม่ = 3 ติ๊ด, แชท = 1 ติ๊ด
-    if (type == 'incident') {
-      web_noti.playWebAlertSoundMultiple(3);
-      web_noti.vibrateDevice([300, 100, 300, 100, 300]);
+    // 2. เสียงแยกประเภท และสั่นสะเทือนตามแต่ละแพลตฟอร์ม
+    if (kIsWeb) {
+      if (type == 'incident') {
+        web_noti.playWebAlertSoundMultiple(3);
+        web_noti.vibrateDevice([300, 100, 300, 100, 300]);
+      } else if (type == 'chat') {
+        web_noti.playWebAlertSound();
+        web_noti.vibrateDevice([200, 100, 200]);
+      } else {
+        // status_update
+        web_noti.playWebAlertSound();
+        web_noti.vibrateDevice([150, 100, 150]);
+      }
     } else {
-      web_noti.playWebAlertSound(); // 1 ติ๊ด
-      web_noti.vibrateDevice([200, 100, 200]);
+      // Windows & Mobile: ใช้ SoundAlertService (audioplayers)
+      if (type == 'incident') {
+        SoundAlertService.playAlert();
+      } else {
+        SoundAlertService.playShortAlert();
+      }
+
+      // สั่นสะเทือนเฉพาะบน Mobile (Android / iOS)
+      if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) {
+        if (type == 'incident') {
+          HapticFeedback.vibrate();
+          Future.delayed(const Duration(milliseconds: 400), () => HapticFeedback.vibrate());
+        } else {
+          HapticFeedback.mediumImpact();
+        }
+      }
     }
 
     // In-app snackbar
     if (mounted) {
-      final color = type == 'incident' ? Colors.red.shade700 : Colors.blue.shade700;
-      final icon = type == 'incident' ? Icons.warning_amber : Icons.chat_bubble;
+      Color color;
+      IconData icon;
+      if (type == 'incident') {
+        color = Colors.red.shade700;
+        icon = Icons.warning_amber;
+      } else if (type == 'chat') {
+        color = Colors.blue.shade700;
+        icon = Icons.chat_bubble;
+      } else {
+        // status_update
+        color = Colors.teal.shade700;
+        icon = Icons.sync;
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

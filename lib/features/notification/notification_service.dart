@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,11 +41,12 @@ class NotificationService {
   // =============================================
 
   static const AndroidNotificationChannel urgentChannel = AndroidNotificationChannel(
-    'urgent_incidents',
+    'urgent_incidents_v2',
     'เหตุด่วน',
     description: 'แจ้งเตือนเมื่อมีเหตุด่วนใหม่หรือเหตุฉุกเฉิน',
     importance: Importance.high,
     playSound: true,
+    sound: RawResourceAndroidNotificationSound('alert'),
     enableVibration: true,
     showBadge: true,
   );
@@ -403,7 +405,13 @@ class NotificationService {
       importance: channel.importance,
       priority: channel.importance == Importance.high ? Priority.high : Priority.defaultPriority,
       playSound: channel.playSound,
+      sound: channel.id == 'urgent_incidents_v2'
+          ? const RawResourceAndroidNotificationSound('alert')
+          : null,
       enableVibration: channel.enableVibration,
+      vibrationPattern: channel.id == 'urgent_incidents_v2'
+          ? Int64List.fromList([0, 1000, 500, 1000])
+          : null,
       showWhen: true,
       styleInformation: BigTextStyleInformation(
         body,

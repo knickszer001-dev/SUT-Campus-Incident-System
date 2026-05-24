@@ -71,7 +71,32 @@ void _playBeeps(int beeps) {
           Timer(const Duration(milliseconds: 400), playOnce);
         }
       }).catchError((_) {
-        // Autoplay policy อาจบล็อก
+        // Fallback: ลองใช้เสียงจาก assets ท้องถิ่นหาก URL ภายนอกเข้าถึงไม่ได้
+        try {
+          final fallbackAudio = html.HTMLAudioElement();
+          fallbackAudio.src = 'assets/assets/sounds/alert.mp3';
+          fallbackAudio.volume = 0.8;
+          fallbackAudio.play().toDart.then((_) {
+            played++;
+            if (played < beeps) {
+              Timer(const Duration(milliseconds: 400), playOnce);
+            }
+          }).catchError((_) {
+            // เส้นทางสำรองตัวที่สอง (เผื่อการแมพพาธต่างกัน)
+            try {
+              final fallbackAudio2 = html.HTMLAudioElement();
+              fallbackAudio2.src = 'assets/sounds/alert.mp3';
+              fallbackAudio2.volume = 0.8;
+              fallbackAudio2.play().toDart.then((_) {
+                played++;
+                if (played < beeps) {
+                  Timer(const Duration(milliseconds: 400), playOnce);
+                }
+              }).catchError((_) => null);
+            } catch (_) {}
+            return null;
+          });
+        } catch (_) {}
         return null;
       });
     }

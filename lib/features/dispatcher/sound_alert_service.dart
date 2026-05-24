@@ -10,6 +10,7 @@ class SoundAlertService {
 
   /// เริ่มต้น — ตั้งค่า volume (รองรับทั้ง Web + Mobile)
   static Future<void> initialize() async {
+    if (_isInitialized) return;
     try {
       await _player.setVolume(0.8);
       _isInitialized = true;
@@ -21,7 +22,7 @@ class SoundAlertService {
     }
   }
 
-  /// เล่นเสียงแจ้งเตือน
+  /// เล่นเสียงแจ้งเตือน (3 ติ๊ด / เสียงเหตุการณ์ใหม่)
   static Future<void> playAlert() async {
     if (!_isInitialized) return;
     try {
@@ -32,16 +33,34 @@ class SoundAlertService {
       if (kIsWeb) {
         // Web fallback: ใช้ Web Audio API โดยตรง
         try {
-          web_noti.playWebAlertSound();
+          web_noti.playWebAlertSoundMultiple(3);
         } catch (_) {}
       } else {
-        // Mobile fallback: เล่นจาก URL
+        // Mobile/Windows fallback: เล่นจาก URL
         try {
           await _player.play(
             UrlSource('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'),
           );
         } catch (_) {}
       }
+    }
+  }
+
+  /// เล่นเสียงแจ้งเตือนแบบสั้น (1 ติ๊ด / สำหรับแชท หรือการอัปเดตสถานะงาน)
+  static Future<void> playShortAlert() async {
+    if (!_isInitialized) return;
+    try {
+      if (kIsWeb) {
+        try {
+          web_noti.playWebAlertSound();
+        } catch (_) {}
+      } else {
+        await _player.play(
+          UrlSource('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'),
+        );
+      }
+    } catch (e) {
+      debugPrint('[SoundAlert] play short alert error: $e');
     }
   }
 
