@@ -111,173 +111,193 @@ class _IncidentListScreenState extends ConsumerState<IncidentListScreen>
     }
   }
 
-  Widget buildIncidentList(int tabIndex) {
-    final repo = ref.watch(incidentRepositoryProvider);
-    final statuses = _getStatusesForTab(tabIndex);
-
-    // v2 Fix: เลือก stream ตาม filterMode
-    // สำหรับ myIncidents / assignedToMe → ใช้ stream ของตัวเอง แล้ว filter ด้วย status ของ tab
-    Stream stream;
-    switch (widget.filterMode) {
-      case FilterMode.myIncidents:
-        // ดึงสตรีมที่แคชไว้จาก Riverpod ป้องกันการยิงคิวรี่ซ้ำทางอินเทอร์เน็ต
-        stream = ref.watch(myIncidentsStreamProvider(widget.userId ?? '').stream);
-        break;
-      case FilterMode.assignedToMe:
-        // ดึงสตรีมที่แคชไว้จาก Riverpod ป้องกันการยิงคิวรี่ซ้ำทางอินเทอร์เน็ต
-        stream = ref.watch(assignedToMeIncidentsStreamProvider(widget.userId ?? '').stream);
-        break;
-      case FilterMode.all:
-        stream = repo.getIncidentsStreamByStatus(statuses);
-        break;
+  Widget _buildListFromQuerySnapshot(
+      BuildContext context, QuerySnapshot snapshot, List<String> statuses) {
+    if (snapshot.docs.isEmpty) {
+      return const Center(child: Text("ไม่มีเหตุการณ์"));
     }
 
-    return StreamBuilder(
-      stream: stream,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    List<Incident> incidents = snapshot.docs
+        .map<Incident>((doc) => Incident.fromFirestore(doc))
+        .toList();
 
-        if (snapshot.hasError) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                  const SizedBox(height: 12),
-                  Text(
-                    'เกิดข้อผิดพลาดในการโหลดข้อมูล',
-                    style: TextStyle(color: Colors.red[700]),
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton.icon(
-                    onPressed: () { setState(() {}); },
-                    icon: const Icon(Icons.refresh, size: 16),
-                    label: const Text('ลองใหม่'),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
+    // Sort in-memory to prevent missing composite index crash on Firebase
+    incidents.sort((a, b) {
+      final aTime = a.createdAt ?? DateTime(2000);
+      final bTime = b.createdAt ?? DateTime(2000);
+      return bTime.compareTo(aTime);
+    });
 
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text("ไม่มีเหตุการณ์"));
-        }
+    // v2 Fix: สำหรับ myIncidents / assignedToMe → filter ด้วย status ของ tab ที่เลือก
+    if (widget.filterMode != FilterMode.all) {
+      incidents = incidents.where((i) => statuses.contains(i.status)).toList();
+    }
 
-        List<Incident> incidents = snapshot.data!.docs
-            .map<Incident>((doc) => Incident.fromFirestore(doc))
-            .toList();
+    if (incidents.isEmpty) {
+      return const Center(child: Text("ไม่มีเหตุการณ์"));
+    }
 
-        // Sort in-memory to prevent missing composite index crash on Firebase
-        incidents.sort((a, b) {
-          final aTime = a.createdAt ?? DateTime(2000);
-          final bTime = b.createdAt ?? DateTime(2000);
-          return bTime.compareTo(aTime);
-        });
+    // #14: Pull-to-Refresh
+    return RefreshIndicator(
+      onRefresh: () async {
+        setState(() {});
+        await Future.delayed(const Duration(milliseconds: 500));
+      },
+      child: ListView.builder(
+        itemCount: incidents.length,
+        itemBuilder: (context, index) {
+          final incident = incidents[index];
 
-        // v2 Fix: สำหรับ myIncidents / assignedToMe → filter ด้วย status ของ tab ที่เลือก
-        // แก้ bug ที่เดิม stream ดึงมาทุก status แต่ tab filter ไม่ match
-        if (widget.filterMode != FilterMode.all) {
-          incidents = incidents.where((i) => statuses.contains(i.status)).toList();
-        }
-
-        if (incidents.isEmpty) {
-          return const Center(child: Text("ไม่มีเหตุการณ์"));
-        }
-
-        // #14: Pull-to-Refresh
-        return RefreshIndicator(
-          onRefresh: () async {
-            // Force rebuild by waiting briefly
-            setState(() {});
-            await Future.delayed(const Duration(milliseconds: 500));
-          },
-          child: ListView.builder(
-          itemCount: incidents.length,
-          itemBuilder: (context, index) {
-            final incident = incidents[index];
-
-            return Card(
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: AppHelpers.getPriorityColor(incident.priority),
-                  child: Icon(
-                    AppHelpers.getTypeIcon(incident.type),
-                    color: Colors.white,
-                  ),
+          return Card(
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: AppHelpers.getPriorityColor(incident.priority),
+                child: Icon(
+                  AppHelpers.getTypeIcon(incident.type),
+                  color: Colors.white,
                 ),
+              ),
 
-                title: Text(incident.title),
+              title: Text(incident.title),
 
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 4),
-                    Text(incident.typeText),
-                    const SizedBox(height: 4),
-                    Text(
-                      incident.description,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppHelpers.getPriorityColor(incident.priority),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            incident.priorityText,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 4),
+                  Text(incident.typeText),
+                  const SizedBox(height: 4),
+                  Text(
+                    incident.description,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppHelpers.getPriorityColor(incident.priority),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          incident.statusText,
-                          style: TextStyle(
-                            color: AppHelpers.getStatusColor(incident.status),
+                        child: Text(
+                          incident.priorityText,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      incident.formattedTime,
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => IncidentDetailScreen(incidentId: incident.id),
-                    ),
-                  );
-                },
-
-                // #12: Unread message badge
-                trailing: _ChatBadge(incidentId: incident.id),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        incident.statusText,
+                        style: TextStyle(
+                          color: AppHelpers.getStatusColor(incident.status),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    incident.formattedTime,
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
               ),
-            );
-          },
-        ),
-        );
-      },
+
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => IncidentDetailScreen(incidentId: incident.id),
+                  ),
+                );
+              },
+
+              // #12: Unread message badge
+              trailing: _ChatBadge(incidentId: incident.id),
+            ),
+          );
+        },
+      ),
     );
+  }
+
+  Widget _buildListFromSnapshot(
+      BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot, List<String> statuses) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (snapshot.hasError) {
+      return _buildErrorWidget(context, snapshot.error);
+    }
+
+    if (!snapshot.hasData || snapshot.data == null) {
+      return const Center(child: Text("ไม่มีเหตุการณ์"));
+    }
+
+    return _buildListFromQuerySnapshot(context, snapshot.data!, statuses);
+  }
+
+  Widget _buildErrorWidget(BuildContext context, Object? error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 48, color: Colors.red),
+            const SizedBox(height: 12),
+            Text(
+              'เกิดข้อผิดพลาดในการโหลดข้อมูล',
+              style: TextStyle(color: Colors.red[700]),
+            ),
+            const SizedBox(height: 8),
+            TextButton.icon(
+              onPressed: () {
+                setState(() {});
+              },
+              icon: const Icon(Icons.refresh, size: 16),
+              label: const Text('ลองใหม่'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildIncidentList(int tabIndex) {
+    final repo = ref.watch(incidentRepositoryProvider);
+    final statuses = _getStatusesForTab(tabIndex);
+    final user = ref.watch(authStateProvider).value;
+    final activeUserId = widget.userId ?? user?.uid ?? '';
+
+    // ตรวจจับสตรีมผ่าน StreamProvider ของ Riverpod ป้องกันการเชื่อมต่อล่ม
+    if (widget.filterMode == FilterMode.myIncidents) {
+      final asyncValue = ref.watch(myIncidentsStreamProvider(activeUserId));
+      return asyncValue.when(
+        data: (snapshot) => _buildListFromQuerySnapshot(context, snapshot, statuses),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => _buildErrorWidget(context, err),
+      );
+    } else if (widget.filterMode == FilterMode.assignedToMe) {
+      final asyncValue = ref.watch(assignedToMeIncidentsStreamProvider(activeUserId));
+      return asyncValue.when(
+        data: (snapshot) => _buildListFromQuerySnapshot(context, snapshot, statuses),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => _buildErrorWidget(context, err),
+      );
+    } else {
+      // FilterMode.all: ใช้ Firestore Stream โดยตรงแบบเสถียร
+      final stream = repo.getIncidentsStreamByStatus(statuses);
+      return StreamBuilder<QuerySnapshot>(
+        stream: stream,
+        builder: (context, snapshot) => _buildListFromSnapshot(context, snapshot, statuses),
+      );
+    }
   }
 
   @override
