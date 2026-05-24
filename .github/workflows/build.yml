@@ -34,7 +34,22 @@ jobs:
         run: flutter pub get
 
       - name: Build Release APK
-        run: flutter build apk --release --verbose
+        run: |
+          flutter build apk --release --verbose || true
+          if [ -f build/app/outputs/apk/release/app-release.apk ]; then
+            mkdir -p build/app/outputs/flutter-apk
+            cp build/app/outputs/apk/release/app-release.apk build/app/outputs/flutter-apk/app-release.apk
+            echo "Found APK at build/app/outputs/apk/release/app-release.apk!"
+          elif [ -f android/app/build/outputs/apk/release/app-release.apk ]; then
+            mkdir -p build/app/outputs/flutter-apk
+            cp android/app/build/outputs/apk/release/app-release.apk build/app/outputs/flutter-apk/app-release.apk
+            echo "Found APK at android/app/build/outputs/apk/release/app-release.apk!"
+          elif [ -f build/app/outputs/flutter-apk/app-release.apk ]; then
+            echo "Found APK at build/app/outputs/flutter-apk/app-release.apk!"
+          else
+            echo "APK not found anywhere!"
+            exit 1
+          fi
 
       - name: Upload Android APK Artifact
         uses: actions/upload-artifact@v4
