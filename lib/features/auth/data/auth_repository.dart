@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// AuthRepository — v2: เปลี่ยนจาก email เป็น studentId
-/// - register: รับ studentId, สร้าง email สมมติ $studentId@campus.local
-/// - login: รับ studentId + password, แปลงเป็น email สมมติก่อนเรียก Firebase Auth
+/// AuthRepository — v3: เปลี่ยนจาก email เป็น studentId พร้อมเชื่อมโยง GSuite มทส. (@g.sut.ac.th)
+/// - register: รับ studentId, สร้าง email จริง $studentId@g.sut.ac.th
+/// - login: รับ studentId + password, แปลงเป็น email ก่อนเรียก Firebase Auth
 /// - checkStudentIdExists: ตรวจสอบ studentId ซ้ำก่อน register
 class AuthRepository {
   final FirebaseAuth _auth;
@@ -25,9 +25,7 @@ class AuthRepository {
     return query.docs.isNotEmpty;
   }
 
-  /// REGISTER — v2: ใช้ studentId + สร้าง email สมมติ
-  /// ไม่ต้อง pre-check studentId ซ้ำ เพราะ Firebase Auth จะ reject email ซ้ำให้อัตโนมัติ
-  /// (email สมมติ = $studentId@campus.local → studentId ซ้ำ = email ซ้ำ)
+  /// REGISTER — v3: ใช้ studentId + สร้าง email จริง @g.sut.ac.th เพื่อให้ผู้ใช้ได้รับเมลลืมรหัสผ่าน
   Future<User?> register(
     String studentId,
     String firstName,
@@ -36,10 +34,10 @@ class AuthRepository {
     String password,
   ) async {
     final normalizedId = studentId.toUpperCase();
-    final fakeEmail = '$normalizedId@campus.local';
+    final studentEmail = '$normalizedId@g.sut.ac.th';
 
     UserCredential result = await _auth.createUserWithEmailAndPassword(
-      email: fakeEmail,
+      email: studentEmail,
       password: password,
     );
 
@@ -51,7 +49,7 @@ class AuthRepository {
         "firstName": firstName,
         "lastName": lastName,
         "phoneNumber": phoneNumber,
-        "email": fakeEmail,
+        "email": studentEmail,
         "role": "user",
         "department": null,
         "fcmToken": null,
@@ -64,13 +62,13 @@ class AuthRepository {
     return user;
   }
 
-  /// LOGIN — v2: รับ studentId + password, แปลงเป็น email สมมติ
+  /// LOGIN — v3: รับ studentId + password, แปลงเป็น email @g.sut.ac.th
   Future<User?> login(String studentId, String password) async {
     final normalizedId = studentId.toUpperCase();
-    final fakeEmail = '$normalizedId@campus.local';
+    final studentEmail = '$normalizedId@g.sut.ac.th';
 
     UserCredential result = await _auth.signInWithEmailAndPassword(
-      email: fakeEmail,
+      email: studentEmail,
       password: password,
     );
     return result.user;
@@ -126,16 +124,13 @@ class AuthRepository {
     await user.updatePassword(newPassword);
   }
 
-  /// F3: รีเซ็ตรหัสผ่าน — ส่ง email reset ไปยัง studentId@campus.local
-  /// หมายเหตุ: เนื่องจากใช้ email สมมติ (campus.local) จึงไม่มี inbox จริง
-  /// วิธีนี้จะใช้กับระบบที่มี mail server ภายใน หรือใช้ Admin SDK reset แทน
-  /// สำหรับ production: ให้ admin reset ผ่าน Firebase Console หรือ Cloud Function
+  /// F3: รีเซ็ตรหัสผ่าน — ส่ง email reset ไปยังอีเมลจริง Bxxxxxxx@g.sut.ac.th ของนักศึกษา มทส.
   Future<void> resetPassword(String studentId) async {
     final normalizedId = studentId.toUpperCase();
-    final fakeEmail = '$normalizedId@campus.local';
+    final studentEmail = '$normalizedId@g.sut.ac.th';
     
     try {
-      await _auth.sendPasswordResetEmail(email: fakeEmail);
+      await _auth.sendPasswordResetEmail(email: studentEmail);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         throw Exception('ไม่พบรหัสนักศึกษา/บุคลากรนี้ในระบบ');

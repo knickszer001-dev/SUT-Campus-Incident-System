@@ -347,12 +347,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             );
                             if (!dialogContext.mounted) return;
                             Navigator.pop(dialogContext);
-                            if (mounted) {
+                             if (mounted) {
+                              final studentId = resetIdController.text.trim().toUpperCase();
                               ScaffoldMessenger.of(this.context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('ส่งคำขอรีเซ็ตรหัสผ่านเรียบร้อย — กรุณาติดต่อผู้ดูแลระบบเพื่อรับรหัสผ่านใหม่'),
+                                SnackBar(
+                                  content: Text('ส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมล $studentId@g.sut.ac.th เรียบร้อยแล้ว! กรุณาตรวจสอบกล่องจดหมายเข้าเพื่อตั้งรหัสผ่านใหม่ด้วยตนเอง'),
                                   backgroundColor: Colors.green,
-                                  duration: Duration(seconds: 5),
+                                  duration: const Duration(seconds: 8),
                                 ),
                               );
                             }
