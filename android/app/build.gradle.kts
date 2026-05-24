@@ -33,6 +33,29 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    packaging {
+        resources {
+            excludes.add("META-INF/**")
+            excludes.add("**/*.proto")
+            excludes.add("**/protobuf.meta")
+            excludes.add("**/INDEX.LIST")
+            excludes.add("**/*.kotlin_module")
+            excludes.add("META-INF/*.kotlin_module")
+            excludes.add("kotlin/**")
+            excludes.add("META-INF/proguard/**")
+            excludes.add("META-INF/gradle/incremental.annotation.processors")
+            excludes.add("META-INF/DEPENDENCIES")
+            excludes.add("META-INF/LICENSE")
+            excludes.add("META-INF/LICENSE.txt")
+            excludes.add("META-INF/license.txt")
+            excludes.add("META-INF/NOTICE")
+            excludes.add("META-INF/NOTICE.txt")
+            excludes.add("META-INF/notice.txt")
+            excludes.add("META-INF/ASL2.0")
+            excludes.add("META-INF/compat_release.txt")
+        }
+    }
 }
 
 flutter {

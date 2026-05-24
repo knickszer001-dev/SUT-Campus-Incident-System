@@ -60,3 +60,13 @@ final currentUserProvider = StreamProvider<Map<String, dynamic>?>((ref) {
 
 /// #33: Theme Mode Provider (Dark Mode toggle)
 final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.system);
+
+/// myIncidentsStreamProvider — สตรีมของเหตุการณ์ที่ฉันแจ้ง (แคชโดย Riverpod ส่วนกลาง)
+final myIncidentsStreamProvider = StreamProvider.family<QuerySnapshot, String>((ref, uid) {
+  return ref.watch(incidentRepositoryProvider).getMyIncidents(uid);
+});
+
+/// assignedToMeIncidentsStreamProvider — สตรีมของเหตุการณ์ที่มอบหมายให้ฉัน (แคชโดย Riverpod ส่วนกลาง)
+final assignedToMeIncidentsStreamProvider = StreamProvider.family<QuerySnapshot, String>((ref, uid) {
+  return ref.watch(incidentRepositoryProvider).getAssignedToMe(uid);
+});

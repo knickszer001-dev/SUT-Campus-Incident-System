@@ -256,32 +256,54 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  /// F3: แสดง dialog ลืมรหัสผ่าน
+  /// F3: แสดง dialog ลืมรหัสผ่าน — v3: แยก 2 ขั้นตอน
+  /// Step 1: ยืนยันตัวตน (รหัส + เบอร์โทร)
+  /// Step 2: ตั้งรหัสผ่านใหม่
   void _showForgotPasswordDialog() {
     final resetIdController = TextEditingController();
-    final formKeyReset = GlobalKey<FormState>();
-    bool isResetting = false;
+    final phoneController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    final formKeyStep1 = GlobalKey<FormState>();
+    final formKeyStep2 = GlobalKey<FormState>();
+    int currentStep = 1; // 1 = ยืนยันตัวตน, 2 = ตั้งรหัสผ่านใหม่
+    bool isLoading = false;
+    bool obscureNew = true;
+    bool obscureConfirm = true;
     String? errorMessage;
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (dialogContext) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              title: const Text('🔑 ลืมรหัสผ่าน'),
-              content: Form(
-                key: formKeyReset,
+              title: Row(
+                children: [
+                  const Text('🔑 ลืมรหัสผ่าน'),
+                  const Spacer(),
+                  // Step indicator
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryOrange.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'ขั้นตอน $currentStep/2',
+                      style: TextStyle(fontSize: 11, color: AppTheme.primaryOrange),
+                    ),
+                  ),
+                ],
+              ),
+              content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'กรอกรหัสนักศึกษา/บุคลากรของคุณ\nระบบจะดำเนินการรีเซ็ตรหัสผ่านให้',
-                      style: TextStyle(fontSize: 13, color: Colors.grey),
-                    ),
+                    // === Error Message ===
                     if (errorMessage != null) ...[
-                      const SizedBox(height: 12),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
@@ -302,75 +324,225 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(height: 12),
                     ],
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: resetIdController,
-                      textCapitalization: TextCapitalization.characters,
-                      decoration: const InputDecoration(
-                        hintText: 'รหัสนักศึกษา/บุคลากร',
-                        prefixIcon: Icon(Icons.badge),
-                        labelText: 'รหัสนักศึกษา/บุคลากร',
+
+                    // =====================
+                    // STEP 1: ยืนยันตัวตน
+                    // =====================
+                    if (currentStep == 1)
+                      Form(
+                        key: formKeyStep1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'กรอกรหัสนักศึกษา/บุคลากร และเบอร์โทรที่ลงทะเบียนไว้\nเพื่อยืนยันตัวตนของคุณ',
+                              style: TextStyle(fontSize: 13, color: Colors.grey),
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: resetIdController,
+                              textCapitalization: TextCapitalization.characters,
+                              decoration: const InputDecoration(
+                                hintText: 'รหัสนักศึกษา/บุคลากร',
+                                prefixIcon: Icon(Icons.badge),
+                                labelText: 'รหัสนักศึกษา/บุคลากร',
+                              ),
+                              validator: (v) {
+                                if (v == null || v.trim().isEmpty) return 'กรุณากรอกรหัส';
+                                if (!AppHelpers.isValidStudentId(v.trim())) return 'รหัสต้องมีอย่างน้อย 3 ตัวอักษร';
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                              controller: phoneController,
+                              keyboardType: TextInputType.phone,
+                              decoration: const InputDecoration(
+                                hintText: 'เบอร์โทรที่ลงทะเบียนไว้',
+                                prefixIcon: Icon(Icons.phone),
+                                labelText: 'เบอร์โทรศัพท์',
+                              ),
+                              validator: (v) {
+                                if (v == null || v.trim().isEmpty) return 'กรุณากรอกเบอร์โทร';
+                                if (v.trim().length < 9) return 'เบอร์โทรไม่ถูกต้อง';
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                      validator: (v) {
-                        if (v == null || v.trim().isEmpty) {
-                          return 'กรุณากรอกรหัส';
-                        }
-                        if (!AppHelpers.isValidStudentId(v.trim())) {
-                          return 'รหัสต้องมีอย่างน้อย 3 ตัวอักษร';
-                        }
-                        return null;
-                      },
-                    ),
+
+                    // =====================
+                    // STEP 2: ตั้งรหัสผ่านใหม่
+                    // =====================
+                    if (currentStep == 2)
+                      Form(
+                        key: formKeyStep2,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // แสดงข้อมูลที่ยืนยันแล้ว
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade50,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.green.shade200),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.check_circle, color: Colors.green.shade700, size: 16),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      '✅ ยืนยันตัวตนสำเร็จ\nรหัส: ${resetIdController.text.trim().toUpperCase()}',
+                                      style: TextStyle(color: Colors.green.shade900, fontSize: 12),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'กรอกรหัสผ่านใหม่ที่ต้องการ',
+                              style: TextStyle(fontSize: 13, color: Colors.grey),
+                            ),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                              controller: newPasswordController,
+                              obscureText: obscureNew,
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                hintText: 'รหัสผ่านใหม่',
+                                prefixIcon: const Icon(Icons.lock_outline),
+                                labelText: 'รหัสผ่านใหม่',
+                                suffixIcon: IconButton(
+                                  icon: Icon(obscureNew ? Icons.visibility_off : Icons.visibility),
+                                  onPressed: () => setDialogState(() => obscureNew = !obscureNew),
+                                ),
+                              ),
+                              validator: (v) {
+                                if (v == null || v.isEmpty) return 'กรุณากรอกรหัสผ่านใหม่';
+                                if (v.length < 6) return 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                              controller: confirmPasswordController,
+                              obscureText: obscureConfirm,
+                              decoration: InputDecoration(
+                                hintText: 'ยืนยันรหัสผ่านใหม่',
+                                prefixIcon: const Icon(Icons.lock_reset),
+                                labelText: 'ยืนยันรหัสผ่านใหม่',
+                                suffixIcon: IconButton(
+                                  icon: Icon(obscureConfirm ? Icons.visibility_off : Icons.visibility),
+                                  onPressed: () => setDialogState(() => obscureConfirm = !obscureConfirm),
+                                ),
+                              ),
+                              validator: (v) {
+                                if (v == null || v.isEmpty) return 'กรุณายืนยันรหัสผ่าน';
+                                if (v != newPasswordController.text) return 'รหัสผ่านไม่ตรงกัน';
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),
               actions: [
-                // UX Review #4: ปุ่มยกเลิก สีเทา
+                // ปุ่มซ้าย: ยกเลิก / ย้อนกลับ
                 TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: Text('ยกเลิก', style: TextStyle(color: Colors.grey.shade600)),
+                  onPressed: () {
+                    if (currentStep == 2) {
+                      setDialogState(() {
+                        currentStep = 1;
+                        errorMessage = null;
+                      });
+                    } else {
+                      Navigator.pop(dialogContext);
+                    }
+                  },
+                  child: Text(
+                    currentStep == 2 ? '← ย้อนกลับ' : 'ยกเลิก',
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
                 ),
+
+                // ปุ่มขวา: ยืนยันตัวตน / ตั้งรหัสผ่านใหม่
                 ElevatedButton(
-                  onPressed: isResetting
+                  onPressed: isLoading
                       ? null
                       : () async {
-                          if (!formKeyReset.currentState!.validate()) return;
+                          // === STEP 1: ยืนยันตัวตน ===
+                          if (currentStep == 1) {
+                            if (!formKeyStep1.currentState!.validate()) return;
 
-                          setDialogState(() {
-                            isResetting = true;
-                            errorMessage = null;
-                          });
-                          try {
-                            await ref.read(authRepositoryProvider).resetPassword(
-                              resetIdController.text.trim(),
-                            );
-                            if (!dialogContext.mounted) return;
-                            Navigator.pop(dialogContext);
-                             if (mounted) {
-                              final studentId = resetIdController.text.trim().toUpperCase();
-                              ScaffoldMessenger.of(this.context).showSnackBar(
-                                SnackBar(
-                                  content: Text('ส่งลิงก์รีเซ็ตรหัสผ่านไปยังอีเมล $studentId@g.sut.ac.th เรียบร้อยแล้ว! กรุณาตรวจสอบกล่องจดหมายเข้าเพื่อตั้งรหัสผ่านใหม่ด้วยตนเอง'),
-                                  backgroundColor: Colors.green,
-                                  duration: const Duration(seconds: 8),
-                                ),
-                              );
-                            }
-                          } catch (e) {
                             setDialogState(() {
-                              isResetting = false;
-                              errorMessage = _getResetErrorMessage(e);
+                              isLoading = true;
+                              errorMessage = null;
                             });
+                            try {
+                              await ref.read(authRepositoryProvider).verifyStudentByPhone(
+                                resetIdController.text.trim(),
+                                phoneController.text.trim(),
+                              );
+                              setDialogState(() {
+                                isLoading = false;
+                                currentStep = 2;
+                                errorMessage = null;
+                              });
+                            } catch (e) {
+                              setDialogState(() {
+                                isLoading = false;
+                                errorMessage = _getResetErrorMessage(e);
+                              });
+                            }
+                          }
+                          // === STEP 2: ตั้งรหัสผ่านใหม่ ===
+                          else {
+                            if (!formKeyStep2.currentState!.validate()) return;
+
+                            setDialogState(() {
+                              isLoading = true;
+                              errorMessage = null;
+                            });
+                            try {
+                              await ref.read(authRepositoryProvider).resetPasswordByPhone(
+                                resetIdController.text.trim(),
+                                phoneController.text.trim(),
+                                newPasswordController.text,
+                              );
+                              if (!dialogContext.mounted) return;
+                              Navigator.pop(dialogContext);
+                              if (mounted) {
+                                ScaffoldMessenger.of(this.context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('✅ เปลี่ยนรหัสผ่านสำเร็จ! กรุณาเข้าสู่ระบบด้วยรหัสผ่านใหม่'),
+                                    backgroundColor: Colors.green,
+                                    duration: Duration(seconds: 5),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              setDialogState(() {
+                                isLoading = false;
+                                errorMessage = _getResetErrorMessage(e);
+                              });
+                            }
                           }
                         },
-                  child: isResetting
+                  child: isLoading
                       ? const SizedBox(
                           width: 18,
                           height: 18,
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
-                      : const Text('รีเซ็ตรหัสผ่าน'),
+                      : Text(currentStep == 1 ? 'ยืนยันตัวตน' : 'ตั้งรหัสผ่านใหม่'),
                 ),
               ],
             );
@@ -383,6 +555,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String _getResetErrorMessage(Object e) {
     final msg = e.toString();
     if (msg.contains('ไม่พบรหัสนักศึกษา')) return 'ไม่พบรหัสนักศึกษา/บุคลากรนี้ในระบบ';
+    if (msg.contains('เบอร์โทรศัพท์ไม่ตรง')) return 'เบอร์โทรศัพท์ไม่ตรงกับที่ลงทะเบียนไว้';
     if (msg.contains('user-not-found')) return 'ไม่พบบัญชีนี้ในระบบ';
     if (msg.contains('too-many-requests')) return 'ลองใหม่ภายหลัง';
     return 'เกิดข้อผิดพลาด กรุณาลองใหม่';

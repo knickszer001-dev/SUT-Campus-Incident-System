@@ -472,32 +472,54 @@ class _SOSButtonState extends State<_SOSButton> with SingleTickerProviderStateMi
     super.dispose();
   }
 
-  /// อัปเดตตำแหน่งพิกัดระดับสูงในเบื้องหลัง เพื่อแก้ปัญหาความหน่วง SOS (UX 1)
-  Future<void> _updateHighAccuracyLocationAsync(String docId) async {
+  /// ดึงข้อมูลชื่อผู้แจ้งจริงและ GPS ความละเอียดสูงในเบื้องหลังโดยไม่บล็อกความเร็วปุ่ม SOS (UX 1)
+  Future<void> _updateReporterInfoAndHighAccuracyLocationAsync(String docId, String uid) async {
     try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
+      // 1. ดึงชื่อผู้แจ้งจริงๆ ในเบื้องหลัง (หลีกเลี่ยงบล็อกเครือข่ายหลัก)
+      String? realName;
+      try {
+        final authRepo = widget.ref.read(authRepositoryProvider);
+        realName = await authRepo.getCurrentUserName();
+      } catch (e) {
+        debugPrint('Failed to fetch real name in background: $e');
       }
-      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
-        debugPrint('Location permission denied in background');
-        return;
+
+      // 2. ดึงพิกัด GPS ความละเอียดสูง
+      double? highLat, highLng;
+      try {
+        LocationPermission permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.denied) {
+          permission = await Geolocator.requestPermission();
+        }
+        if (permission != LocationPermission.denied && permission != LocationPermission.deniedForever) {
+          bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+          if (serviceEnabled) {
+            final pos = await Geolocator.getCurrentPosition(
+              desiredAccuracy: LocationAccuracy.high,
+            ).timeout(const Duration(seconds: 7));
+            highLat = pos.latitude;
+            highLng = pos.longitude;
+          }
+        }
+      } catch (e) {
+        debugPrint('Location permission or GPS high accuracy fetch failed: $e');
       }
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) return;
 
-      final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      ).timeout(const Duration(seconds: 7));
-
-      await FirebaseFirestore.instance.collection('incidents').doc(docId).update({
-        'latitude': pos.latitude,
-        'longitude': pos.longitude,
+      final Map<String, dynamic> updates = {
         'updatedAt': FieldValue.serverTimestamp(),
-      });
-      debugPrint('Background location SOS updated successfully: ${pos.latitude}, ${pos.longitude}');
+      };
+      if (realName != null && realName.isNotEmpty) {
+        updates['reporterName'] = realName;
+      }
+      if (highLat != null && highLng != null) {
+        updates['latitude'] = highLat;
+        updates['longitude'] = highLng;
+      }
+
+      await FirebaseFirestore.instance.collection('incidents').doc(docId).update(updates);
+      debugPrint('Background SOS info and high accuracy GPS updated successfully for $docId');
     } catch (e) {
-      debugPrint('Error in background high-accuracy GPS fetch: $e');
+      debugPrint('Error in background SOS info update: $e');
     }
   }
 
@@ -510,8 +532,6 @@ class _SOSButtonState extends State<_SOSButton> with SingleTickerProviderStateMi
       if (user == null) return;
 
       final repo = widget.ref.read(incidentRepositoryProvider);
-      final authRepo = widget.ref.read(authRepositoryProvider);
-      final reporterName = await authRepo.getCurrentUserName();
 
       // ดึงพิกัดล่าสุดที่แคชไว้ (Last Known) ทันทีเพื่อความรวดเร็วระดับวินาทีชีวิต (UX 1)
       double? lat, lng;
@@ -532,25 +552,12 @@ class _SOSButtonState extends State<_SOSButton> with SingleTickerProviderStateMi
         debugPrint('Instant GPS read failed, submitting fallback: $e');
       }
 
-      final recentCount = await repo.countRecentIncidents(user.uid, const Duration(hours: 1));
-      if (recentCount >= 5) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('⚠️ คุณแจ้งเหตุครบ 5 ครั้ง/ชั่วโมงแล้ว กรุณารออีกสักครู่'),
-              backgroundColor: Colors.orange,
-            ),
-          );
-        }
-        return;
-      }
-
-      // ยิงข้อมูลขึ้นเซิร์ฟเวอร์ทันทีด้วย cached GPS (หรือ null เพื่อเลี่ยงการหมุนค้าง)
+      // ยิงข้อมูลขึ้นเซิร์ฟเวอร์ทันทีเพื่อความปลอดภัยสูงสุดโดยไม่ต้องรอโหลดข้อมูลช้า
       final docId = await repo.submitIncident({
         "title": "🆘 SOS เหตุฉุกเฉิน",
         "description": "แจ้งเหตุฉุกเฉินผ่านปุ่ม SOS อัตโนมัติ",
         "reporterId": user.uid,
-        "reporterName": reporterName,
+        "reporterName": user.displayName ?? user.email ?? 'ผู้ใช้งานฉุกเฉิน',
         "type": "emergency",
         "priority": "CRITICAL",
         "latitude": lat,
@@ -564,8 +571,8 @@ class _SOSButtonState extends State<_SOSButton> with SingleTickerProviderStateMi
         "imageUrls": [],
       });
 
-      // รันการค้นหา GPS ความละเอียดสูงและอัปเดตแบบ Asynchronous ในเบื้องหลังโดยไม่บล็อกผู้ใช้
-      _updateHighAccuracyLocationAsync(docId);
+      // รันการค้นหาข้อมูลจริงและ GPS ความละเอียดสูงและอัปเดตแบบ Asynchronous ในเบื้องหลังโดยไม่บล็อกผู้ใช้
+      _updateReporterInfoAndHighAccuracyLocationAsync(docId, user.uid);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

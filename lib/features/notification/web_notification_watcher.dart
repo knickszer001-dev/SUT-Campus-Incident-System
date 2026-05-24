@@ -227,7 +227,7 @@ class _WebNotificationWatcherState extends State<WebNotificationWatcher> {
         final data = doc.data();
         final lastMsg = data['lastMessageAt'] as Timestamp?;
         final lastSenderId = data['lastMessageSenderId'] as String?;
-        final lastText = data['lastMessageText'] as String? ?? '';
+        final lastText = (data['lastMessage'] ?? data['lastMessageText']) as String? ?? '';
         final prevTimestamp = _lastDmTimestamps[doc.id];
 
         if (lastMsg != null && lastSenderId != _userId) {

@@ -480,7 +480,7 @@ class _DispatcherScreenState extends ConsumerState<DispatcherScreen>
             final readBy = data['lastReadBy'] as Map<String, dynamic>? ?? {};
             final lastRead = readBy[uid] as Timestamp?;
             final hasUnread = lastMsg != null && (lastRead == null || lastMsg.compareTo(lastRead) > 0);
-            final lastText = data['lastMessage'] as String? ?? '';
+            final lastText = (data['lastMessage'] ?? data['lastMessageText']) as String? ?? '';
             String timeStr = '';
             if (lastMsg != null) {
               final dt = lastMsg.toDate();

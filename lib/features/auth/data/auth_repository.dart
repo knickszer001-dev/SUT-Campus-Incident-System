@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 /// AuthRepository — v3: เปลี่ยนจาก email เป็น studentId พร้อมเชื่อมโยง GSuite มทส. (@g.sut.ac.th)
 /// - register: รับ studentId, สร้าง email จริง $studentId@g.sut.ac.th
 /// - login: รับ studentId + password, แปลงเป็น email ก่อนเรียก Firebase Auth
 /// - checkStudentIdExists: ตรวจสอบ studentId ซ้ำก่อน register
+/// - resetPasswordByPhone: ยืนยันตัวตนด้วยเบอร์โทร แล้วเปลี่ยนรหัสผ่านโดยตรงผ่าน Cloud Function
 class AuthRepository {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
@@ -25,7 +27,7 @@ class AuthRepository {
     return query.docs.isNotEmpty;
   }
 
-  /// REGISTER — v3: ใช้ studentId + สร้าง email จริง @g.sut.ac.th เพื่อให้ผู้ใช้ได้รับเมลลืมรหัสผ่าน
+  /// REGISTER — v4: ใช้ studentId + สร้าง email สมมติ @campus.local ตามรูปแบบดั้งเดิม
   Future<User?> register(
     String studentId,
     String firstName,
@@ -34,7 +36,7 @@ class AuthRepository {
     String password,
   ) async {
     final normalizedId = studentId.toUpperCase();
-    final studentEmail = '$normalizedId@g.sut.ac.th';
+    final studentEmail = '$normalizedId@campus.local';
 
     UserCredential result = await _auth.createUserWithEmailAndPassword(
       email: studentEmail,
@@ -62,10 +64,10 @@ class AuthRepository {
     return user;
   }
 
-  /// LOGIN — v3: รับ studentId + password, แปลงเป็น email @g.sut.ac.th
+  /// LOGIN — v4: รับ studentId + password, แปลงเป็น email สมมติ @campus.local
   Future<User?> login(String studentId, String password) async {
     final normalizedId = studentId.toUpperCase();
-    final studentEmail = '$normalizedId@g.sut.ac.th';
+    final studentEmail = '$normalizedId@campus.local';
 
     UserCredential result = await _auth.signInWithEmailAndPassword(
       email: studentEmail,
@@ -124,18 +126,50 @@ class AuthRepository {
     await user.updatePassword(newPassword);
   }
 
-  /// F3: รีเซ็ตรหัสผ่าน — ส่ง email reset ไปยังอีเมลจริง Bxxxxxxx@g.sut.ac.th ของนักศึกษา มทส.
-  Future<void> resetPassword(String studentId) async {
-    final normalizedId = studentId.toUpperCase();
-    final studentEmail = '$normalizedId@g.sut.ac.th';
-    
+  /// F3 Step 1: ยืนยันตัวตนด้วยรหัสนักศึกษา + เบอร์โทร (ไม่เปลี่ยนรหัสผ่าน)
+  Future<void> verifyStudentByPhone(String studentId, String phoneNumber) async {
+    final callable = FirebaseFunctions.instanceFor(region: 'asia-southeast1')
+        .httpsCallable('verifyStudentByPhone');
+
     try {
-      await _auth.sendPasswordResetEmail(email: studentEmail);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        throw Exception('ไม่พบรหัสนักศึกษา/บุคลากรนี้ในระบบ');
+      await callable.call({
+        'studentId': studentId.trim().toUpperCase(),
+        'phoneNumber': phoneNumber.trim(),
+      });
+    } on FirebaseFunctionsException catch (e) {
+      switch (e.code) {
+        case 'not-found':
+          throw Exception('ไม่พบรหัสนักศึกษา/บุคลากรนี้ในระบบ');
+        case 'permission-denied':
+          throw Exception('เบอร์โทรศัพท์ไม่ตรงกับที่ลงทะเบียนไว้');
+        default:
+          throw Exception('เกิดข้อผิดพลาด กรุณาลองใหม่');
       }
-      rethrow;
+    }
+  }
+
+  /// F3 Step 2: เปลี่ยนรหัสผ่านผ่าน Cloud Function (หลังยืนยันตัวตนแล้ว)
+  Future<void> resetPasswordByPhone(String studentId, String phoneNumber, String newPassword) async {
+    final callable = FirebaseFunctions.instanceFor(region: 'asia-southeast1')
+        .httpsCallable('resetPasswordByPhone');
+
+    try {
+      await callable.call({
+        'studentId': studentId.trim().toUpperCase(),
+        'phoneNumber': phoneNumber.trim(),
+        'newPassword': newPassword,
+      });
+    } on FirebaseFunctionsException catch (e) {
+      switch (e.code) {
+        case 'not-found':
+          throw Exception('ไม่พบรหัสนักศึกษา/บุคลากรนี้ในระบบ');
+        case 'permission-denied':
+          throw Exception('เบอร์โทรศัพท์ไม่ตรงกับที่ลงทะเบียนไว้');
+        case 'invalid-argument':
+          throw Exception(e.message ?? 'ข้อมูลไม่ถูกต้อง');
+        default:
+          throw Exception('เกิดข้อผิดพลาด กรุณาลองใหม่');
+      }
     }
   }
 }

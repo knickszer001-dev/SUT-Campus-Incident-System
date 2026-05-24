@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers.dart';
 import '../../../core/helpers.dart';
 import '../../../core/constants.dart';
+import '../../../core/transition_delay.dart';
 import '../../../models/incident_model.dart';
 import 'incident_detail_screen.dart';
 
@@ -119,10 +120,12 @@ class _IncidentListScreenState extends ConsumerState<IncidentListScreen>
     Stream stream;
     switch (widget.filterMode) {
       case FilterMode.myIncidents:
-        stream = repo.getMyIncidents(widget.userId ?? '');
+        // ดึงสตรีมที่แคชไว้จาก Riverpod ป้องกันการยิงคิวรี่ซ้ำทางอินเทอร์เน็ต
+        stream = ref.watch(myIncidentsStreamProvider(widget.userId ?? '').stream);
         break;
       case FilterMode.assignedToMe:
-        stream = repo.getAssignedToMe(widget.userId ?? '');
+        // ดึงสตรีมที่แคชไว้จาก Riverpod ป้องกันการยิงคิวรี่ซ้ำทางอินเทอร์เน็ต
+        stream = ref.watch(assignedToMeIncidentsStreamProvider(widget.userId ?? '').stream);
         break;
       case FilterMode.all:
         stream = repo.getIncidentsStreamByStatus(statuses);
@@ -292,13 +295,15 @@ class _IncidentListScreenState extends ConsumerState<IncidentListScreen>
         ),
       ),
 
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          buildIncidentList(0),
-          buildIncidentList(1),
-          buildIncidentList(2),
-        ],
+      body: TransitionDelay(
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            buildIncidentList(0),
+            buildIncidentList(1),
+            buildIncidentList(2),
+          ],
+        ),
       ),
     );
   }

@@ -197,8 +197,8 @@ class MapDashboardScreenState extends ConsumerState<MapDashboardScreen> {
     final allMarkers = <AdaptiveMarker>[..._incidentMarkers, ..._responderMarkers];
 
     return AdaptiveMapWidget(
-      initialLat: 14.9061,
-      initialLng: 102.0113, // มหาวิทยาลัย
+      initialLat: 14.8818,
+      initialLng: 102.0196, // พิกัดศูนย์กลาง มหาวิทยาลัยเทคโนโลยีสุรนารี (SUT Campus Center)
       initialZoom: 15,
       markers: allMarkers,
       myLocationEnabled: true,
@@ -208,6 +208,17 @@ class MapDashboardScreenState extends ConsumerState<MapDashboardScreen> {
         // ถ้ามี selectedIncident ตอนเปิด → animate ไปเลย
         if (widget.selectedIncident != null) {
           _animateToIncident(widget.selectedIncident!);
+        } else if (_incidentMarkers.isNotEmpty) {
+          // UX: แพนกล้องไปยังพิกัดจุดศูนย์กลางเฉลี่ยของเหตุการณ์จริงที่กำลังเกิดขึ้นทั้งหมด
+          double totalLat = 0;
+          double totalLng = 0;
+          for (final m in _incidentMarkers) {
+            totalLat += m.lat;
+            totalLng += m.lng;
+          }
+          final avgLat = totalLat / _incidentMarkers.length;
+          final avgLng = totalLng / _incidentMarkers.length;
+          _mapController?.animateTo(avgLat, avgLng, zoom: 15);
         } else {
           _centerMapToUserLocation();
         }

@@ -118,23 +118,27 @@ service cloud.firestore {
     // Direct Messages Collection (Dispatcher ↔ Responder DM)
     // =============================================
     match /direct_messages/{chatId} {
-      // อ่าน/เขียน: เฉพาะ participant (dispatcher หรือ responder ที่อยู่ใน chat)
+      // อ่าน: เฉพาะผู้ใช้ที่เป็นสมาชิกหนึ่งใน participants เท่านั้น
       allow read: if isAuthenticated() && (
-        isDispatcherOrAdmin() || isResponder()
+        request.auth.uid in resource.data.participants
       );
 
-      // สร้าง/อัปเดต chat metadata: dispatcher + responder
-      allow create, update: if isAuthenticated() && (
-        isDispatcherOrAdmin() || isResponder()
+      // สร้าง: ต้องมี uid ของผู้สร้างเป็นหนึ่งใน participants ของแชทใหม่
+      allow create: if isAuthenticated() && (
+        request.auth.uid in request.resource.data.participants
+      );
+
+      // อัปเดต: ผู้ทำการอัปเดตต้องเป็นหนึ่งในสมาชิกทั้งข้อมูลเดิมและข้อมูลใหม่ เพื่อป้องกันการแฮกเปลี่ยนตัวตน
+      allow update: if isAuthenticated() && (
+        request.auth.uid in resource.data.participants &&
+        request.auth.uid in request.resource.data.participants
       );
 
       // Messages sub-collection
       match /messages/{messageId} {
-        allow read: if isAuthenticated() && (
-          isDispatcherOrAdmin() || isResponder()
-        );
-        allow create: if isAuthenticated() && (
-          isDispatcherOrAdmin() || isResponder()
+        // ตรวจสอบความปลอดภัยจากเอกสาร Direct Message หลัก (Parent Document)
+        allow read, create: if isAuthenticated() && (
+          request.auth.uid in get(/databases/$(database)/documents/direct_messages/$(chatId)).data.participants
         );
       }
     }

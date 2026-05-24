@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../core/providers.dart';
 import '../../core/theme.dart';
@@ -47,7 +46,7 @@ class HomeScreen extends ConsumerWidget {
       backgroundColor: Colors.grey.shade50,
 
       // Chat FAB + notification badge
-      floatingActionButton: _ChatFAB(userId: user?.uid, ref: ref),
+      floatingActionButton: _ChatFAB(userId: user?.uid),
 
       appBar: AppBar(
         // โลโก้มหาลัย + สาขาวิชา ซ้ายบน (พื้นหลังขาว มองเห็นชัด)
@@ -369,14 +368,17 @@ class HomeScreen extends ConsumerWidget {
 }
 
 /// Chat FAB with notification badge
-class _ChatFAB extends StatelessWidget {
+class _ChatFAB extends ConsumerWidget {
   final String? userId;
-  final WidgetRef ref;
-  const _ChatFAB({required this.userId, required this.ref});
+  const _ChatFAB({required this.userId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final uid = userId;
+    if (uid == null) return const SizedBox.shrink();
+
+    final incidentsAsync = ref.watch(myIncidentsStreamProvider(uid));
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -389,41 +391,37 @@ class _ChatFAB extends StatelessWidget {
           elevation: 6,
           child: const Icon(Icons.chat, color: Colors.white, size: 26),
         ),
-        if (uid != null)
-          StreamBuilder<QuerySnapshot>(
-            stream: ref.read(firestoreProvider)
-                .collection('incidents')
-                .where('reporterId', isEqualTo: uid)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) return const SizedBox.shrink();
-              int unreadCount = 0;
-              for (final doc in snapshot.data!.docs) {
-                final incident = Incident.fromFirestore(doc);
-                if (incident.hasUnreadMessages(uid)) {
-                  unreadCount++;
-                }
+        incidentsAsync.when(
+          data: (snapshot) {
+            int unreadCount = 0;
+            for (final doc in snapshot.docs) {
+              final incident = Incident.fromFirestore(doc);
+              if (incident.hasUnreadMessages(uid)) {
+                unreadCount++;
               }
-              if (unreadCount == 0) return const SizedBox.shrink();
-              return Positioned(
-                right: -4,
-                top: -4,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
-                  child: Text(
-                    '$unreadCount',
-                    style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
+            }
+            if (unreadCount == 0) return const SizedBox.shrink();
+            return Positioned(
+              right: -4,
+              top: -4,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
                 ),
-              );
-            },
-          ),
+                constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
+                child: Text(
+                  '$unreadCount',
+                  style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          },
+          loading: () => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
       ],
     );
   }

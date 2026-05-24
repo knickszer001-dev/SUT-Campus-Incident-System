@@ -51,6 +51,7 @@ class DirectChatRepository {
       'participants': participantIds,
       'lastMessageAt': FieldValue.serverTimestamp(),
       'lastMessageText': text,
+      'lastMessage': text, // Write both lastMessageText and lastMessage to prevent field mismatch
       'lastMessageSenderId': senderId,
       'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));

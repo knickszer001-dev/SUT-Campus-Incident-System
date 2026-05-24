@@ -46,3 +46,6 @@ app.*.map.json
 
 # Node modules for Firebase Cloud Functions
 **/node_modules/
+
+# Firebase cache
+.firebase/

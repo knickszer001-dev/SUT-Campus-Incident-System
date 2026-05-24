@@ -109,6 +109,19 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
           _heatCircles = circles;
           _isLoading = false;
         });
+
+        // UX: ปรับกล้องแผนที่ความร้อนไปที่จุดศูนย์กลางของเหตุการณ์ที่มีอยู่จริงโดยอัตโนมัติ
+        if (circles.isNotEmpty && _mapController != null) {
+          double totalLat = 0;
+          double totalLng = 0;
+          for (final c in circles) {
+            totalLat += c.lat;
+            totalLng += c.lng;
+          }
+          final avgLat = totalLat / circles.length;
+          final avgLng = totalLng / circles.length;
+          _mapController?.animateTo(avgLat, avgLng, zoom: 15);
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -135,8 +148,8 @@ class _HeatmapScreenState extends ConsumerState<HeatmapScreen> {
           : Stack(
               children: [
                 AdaptiveMapWidget(
-                  initialLat: 14.9061,
-                  initialLng: 102.0113,
+                  initialLat: 14.8818,
+                  initialLng: 102.0196, // พิกัดศูนย์กลาง มหาวิทยาลัยเทคโนโลยีสุรนารี (SUT Campus Center)
                   initialZoom: 15,
                   circles: _heatCircles,
                   myLocationEnabled: true,
