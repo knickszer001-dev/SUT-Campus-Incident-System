@@ -67,7 +67,7 @@ class CampusIncidentApp extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
 
     return MaterialApp(
-      title: 'ระบบแจ้งเหตุมหาวิทยาลัย',
+      title: 'ระบบแจ้งเหตุภายในมหาวิทยาลัยเทคโนโลยีสุรนารี',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

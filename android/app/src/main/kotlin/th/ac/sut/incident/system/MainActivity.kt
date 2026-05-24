@@ -1,4 +1,4 @@
-package com.example.mobile_user_app
+package th.ac.sut.incident.system
 
 import io.flutter.embedding.android.FlutterActivity
 

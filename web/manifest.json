@@ -1,11 +1,11 @@
 {
-    "name": "mobile_user_app",
-    "short_name": "mobile_user_app",
+    "name": "SUT Campus Incident System",
+    "short_name": "SUT Incident",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "ระบบแจ้งเหตุภายในมหาวิทยาลัยเทคโนโลยีสุรนารี (SUT Campus Incident System)",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
