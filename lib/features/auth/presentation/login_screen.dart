@@ -261,6 +261,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final resetIdController = TextEditingController();
     final formKeyReset = GlobalKey<FormState>();
     bool isResetting = false;
+    String? errorMessage;
 
     showDialog(
       context: context,
@@ -279,6 +280,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       'กรอกรหัสนักศึกษา/บุคลากรของคุณ\nระบบจะดำเนินการรีเซ็ตรหัสผ่านให้',
                       style: TextStyle(fontSize: 13, color: Colors.grey),
                     ),
+                    if (errorMessage != null) ...[
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.red.shade200),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.error_outline, color: Colors.red.shade700, size: 16),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                errorMessage!,
+                                style: TextStyle(color: Colors.red.shade900, fontSize: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: resetIdController,
@@ -313,7 +337,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       : () async {
                           if (!formKeyReset.currentState!.validate()) return;
 
-                          setDialogState(() => isResetting = true);
+                          setDialogState(() {
+                            isResetting = true;
+                            errorMessage = null;
+                          });
                           try {
                             await ref.read(authRepositoryProvider).resetPassword(
                               resetIdController.text.trim(),
@@ -330,15 +357,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               );
                             }
                           } catch (e) {
-                            setDialogState(() => isResetting = false);
-                            if (dialogContext.mounted) {
-                              ScaffoldMessenger.of(dialogContext).showSnackBar(
-                                SnackBar(
-                                  content: Text('ไม่สำเร็จ: ${_getResetErrorMessage(e)}'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
+                            setDialogState(() {
+                              isResetting = false;
+                              errorMessage = _getResetErrorMessage(e);
+                            });
                           }
                         },
                   child: isResetting
