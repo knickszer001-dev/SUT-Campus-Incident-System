@@ -32,6 +32,31 @@
   <title>SUT Campus Incident System</title>
   <link rel="manifest" href="manifest.json">
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJLCZJWjIJpGmWyAgoLx7XjgTl80O2Qbs"></script>
+  
+  <script>
+    // 💡 ระบบกู้คืนหน้าจออัตโนมัติสำหรับ Flutter Web (แก้ปัญหาจอดำ / จอแข็งบน Chrome Android)
+    
+    // 1. ตรวจจับ WebGL context lost (WebGL ล่มหลังเบราว์เซอร์พักการทำงานในเบื้องหลัง)
+    window.addEventListener('webglcontextlost', function(event) {
+      console.warn('WebGL context lost detected! Force reloading page to recover rendering...');
+      event.preventDefault();
+      window.location.reload();
+    }, true);
+
+    // 2. ตรวจจับการพักหน้าเว็บเป็นเวลานาน (Visibility Timeout)
+    let lastHiddenTime = 0;
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden) {
+        lastHiddenTime = Date.now();
+      } else {
+        // หากผู้ใช้ย้ายแท็บหรือพักหน้าจอนานเกิน 5 นาที (300,000 ms) ให้บังคับรีโหลดใหม่เพื่อล้างหน่วยความจำและการวาดภาพที่ค้างคา
+        if (lastHiddenTime > 0 && (Date.now() - lastHiddenTime > 5 * 60 * 1000)) {
+          console.log('App suspended for more than 5 minutes. Auto-refreshing session...');
+          window.location.reload();
+        }
+      }
+    });
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
