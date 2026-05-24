@@ -132,14 +132,15 @@ class AuthRepository {
   /// สำหรับ production: ให้ admin reset ผ่าน Firebase Console หรือ Cloud Function
   Future<void> resetPassword(String studentId) async {
     final normalizedId = studentId.toUpperCase();
-
-    // ตรวจว่ามี studentId นี้ในระบบ
-    final exists = await checkStudentIdExists(normalizedId);
-    if (!exists) {
-      throw Exception('ไม่พบรหัสนักศึกษา/บุคลากรนี้ในระบบ');
-    }
-
     final fakeEmail = '$normalizedId@campus.local';
-    await _auth.sendPasswordResetEmail(email: fakeEmail);
+    
+    try {
+      await _auth.sendPasswordResetEmail(email: fakeEmail);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw Exception('ไม่พบรหัสนักศึกษา/บุคลากรนี้ในระบบ');
+      }
+      rethrow;
+    }
   }
 }
