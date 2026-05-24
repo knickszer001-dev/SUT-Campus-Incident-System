@@ -1,0 +1,142 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =============================================
+    // Helper Functions
+    // =============================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return getUserRole() == 'admin';
+    }
+
+    function isDispatcher() {
+      return getUserRole() == 'dispatcher';
+    }
+
+    function isResponder() {
+      return getUserRole() == 'responder';
+    }
+
+    function isDispatcherOrAdmin() {
+      return isAdmin() || isDispatcher();
+    }
+
+    // Helper check for incident participation
+    function isIncidentParticipant(incId) {
+      let incident = get(/databases/$(database)/documents/incidents/$(incId)).data;
+      return incident.reporterId == request.auth.uid || 
+             incident.responderId == request.auth.uid || 
+             isDispatcherOrAdmin();
+    }
+
+    // =============================================
+    // Users Collection
+    // =============================================
+    match /users/{userId} {
+      // ทุก role อ่าน users ได้ (สำหรับโทร/ดูชื่อ/ดู profile)
+      allow read: if isAuthenticated();
+
+      // สร้าง profile ตัวเองได้ (ตอน register) - บล็อกสิทธิ์ Role Spoofing (ต้องตั้งเป็น user หรือไม่ระบุบทบาท)
+      allow create: if isAuthenticated() && isOwner(userId) && 
+        (!('role' in request.resource.data) || request.resource.data.role == 'user');
+
+      // แก้ profile ตัวเอง + Admin แก้ทุกคน + Responder อัปเดต lastLocation - บล็อกไม่ให้อัปเดตเปลี่ยน role ของตนเอง
+      allow update: if isAuthenticated() && (
+        isAdmin() || 
+        (isOwner(userId) && (!('role' in request.resource.data) || request.resource.data.role == resource.data.role))
+      );
+
+      // Admin ลบ user ได้
+      allow delete: if isAuthenticated() && isAdmin();
+    }
+
+    // =============================================
+    // Incidents Collection
+    // =============================================
+    match /incidents/{incidentId} {
+      // อ่าน: ทุก role อ่านได้ (user ดูของตัวเอง, dispatcher/responder ดูทั้งหมด)
+      allow read: if isAuthenticated();
+
+      // สร้าง: ทุกคนสร้างได้ (แจ้งเหตุ)
+      allow create: if isAuthenticated();
+
+      // อัปเดต: owner + dispatcher + responder ที่ได้รับ assign
+      allow update: if isAuthenticated() && (
+        resource.data.reporterId == request.auth.uid ||
+        isDispatcherOrAdmin() ||
+        resource.data.responderId == request.auth.uid
+      );
+
+      // ลบ: Dispatcher + Admin
+      allow delete: if isAuthenticated() && isDispatcherOrAdmin();
+
+      // Messages sub-collection (Chat)
+      match /messages/{messageId} {
+        // อ่าน/เขียน: เฉพาะผู้มีส่วนร่วมในเหตุ (Reporter, Responder หรือ Dispatcher/Admin)
+        allow read, create: if isAuthenticated() && isIncidentParticipant(incidentId);
+        // ลบ: dispatcher + admin (สำหรับลบเหตุรวมแชท)
+        allow delete: if isAuthenticated() && isDispatcherOrAdmin();
+      }
+
+      // Audit Logs sub-collection
+      match /logs/{logId} {
+        // อ่าน/เขียน: เฉพาะผู้มีส่วนร่วมในเหตุ
+        allow read, create: if isAuthenticated() && isIncidentParticipant(incidentId);
+        allow delete: if isAuthenticated() && isDispatcherOrAdmin();
+      }
+    }
+
+    // =============================================
+    // Config Collection (version check, remote config)
+    // =============================================
+    match /config/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && isAdmin();
+    }
+
+    // =============================================
+    // Announcements Collection
+    // =============================================
+    match /announcements/{announcementId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAuthenticated() && isDispatcherOrAdmin();
+    }
+
+    // =============================================
+    // Direct Messages Collection (Dispatcher ↔ Responder DM)
+    // =============================================
+    match /direct_messages/{chatId} {
+      // อ่าน/เขียน: เฉพาะ participant (dispatcher หรือ responder ที่อยู่ใน chat)
+      allow read: if isAuthenticated() && (
+        isDispatcherOrAdmin() || isResponder()
+      );
+
+      // สร้าง/อัปเดต chat metadata: dispatcher + responder
+      allow create, update: if isAuthenticated() && (
+        isDispatcherOrAdmin() || isResponder()
+      );
+
+      // Messages sub-collection
+      match /messages/{messageId} {
+        allow read: if isAuthenticated() && (
+          isDispatcherOrAdmin() || isResponder()
+        );
+        allow create: if isAuthenticated() && (
+          isDispatcherOrAdmin() || isResponder()
+        );
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // อนุญาตให้ user ที่ login แล้วอ่าน/เขียนไฟล์ได้ (สำหรับ incident images)
+    match /incident_images/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+                   && request.resource.size < 10 * 1024 * 1024  // จำกัด 10 MB
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // Fallback: อ่านได้ทุกโฟลเดอร์ (สำหรับ path เก่าที่อาจต่างจาก incident_images)
+    match /{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+  }
+}
