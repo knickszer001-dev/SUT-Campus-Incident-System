@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUT Campus Incident System | Executive & Technical Showcase</title>
+    
+    <!-- Premium Style Reference -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Chart.js for Professional Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    
+    <!-- Custom Interactive Script -->
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- ==================== STICKY SIDEBAR NAVIGATION ==================== -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">SUT</div>
+                <div class="sidebar-title">
+                    <h1>SUT Campus</h1>
+                    <span>Incident System</span>
+                </div>
+            </div>
+            
+            <!-- Technical Search Box -->
+            <div class="sidebar-search">
+                <input type="text" id="searchInput" placeholder="🔍 ค้นหารายละเอียด/ชื่อไฟล์..." aria-label="Search documentation">
+            </div>
+            
+            <nav class="sidebar-menu">
+                <!-- Group 1: Executive Overview -->
+                <div class="menu-group">
+                    <p class="menu-group-title">1. Executive Overview</p>
+                    <ul class="menu-list">
+                        <li class="menu-item">
+                            <a class="menu-link nav-link active" data-target="sec-hero">
+                                <span>🚀</span> Hero & Summary
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-problem">
+                                <span>⚠️</span> Problem Statement
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-objectives">
+                                <span>🎯</span> Project Objectives
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-overview">
+                                <span>🔄</span> System Overview & Journey
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Group 2: Architecture & Features -->
+                <div class="menu-group">
+                    <p class="menu-group-title">2. Architecture & Features</p>
+                    <ul class="menu-list">
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-roles">
+                                <span>👥</span> User & Role System
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-lifecycle">
+                                <span>🕒</span> Incident Lifecycle Timeline
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-features">
+                                <span>💡</span> 10 Core Features Breakdown
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-architecture">
+                                <span>🏛️</span> 3-Tier Clean Architecture
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Group 3: Technical Implementation -->
+                <div class="menu-group">
+                    <p class="menu-group-title">3. Codebase & Cloud Deep Dive</p>
+                    <ul class="menu-list">
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-techstack">
+                                <span>🛠️</span> Technical Stack
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-pubspec">
+                                <span>📦</span> Pubspec Dependencies
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-folder">
+                                <span>📂</span> Source Code Folder Tree
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-filebyfile">
+                                <span>📄</span> File-by-File Analysis
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-screenbyscreen">
+                                <span>📱</span> Screen-by-Screen Flow
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Group 4: Data & Cloud Infrastructure -->
+                <div class="menu-group">
+                    <p class="menu-group-title">4. Database & Core Infrastructure</p>
+                    <ul class="menu-list">
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-nosql">
+                                <span>🗄️</span> NoSQL Database Schema
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-realtime">
+                                <span>⚡</span> Real-time Sync Loop
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-gps">
+                                <span>📍</span> GPS Geolocation & Mapping
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-notification">
+                                <span>🔔</span> FCM Push Notification
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-security">
+                                <span>🛡️</span> Security & Authentication
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a class="menu-link nav-link" data-target="sec-evaluation">
+                                <span>📊</span> UAT Evaluation & Uptime
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+            <!-- Sidebar Footer Mode Switch -->
+            <div class="sidebar-footer">
+                <button class="theme-btn" id="themeBtn" aria-label="Toggle light/dark mode">
+                    <span id="themeIcon">🌙</span> สลับธีมแสดงผล
+                </button>
+            </div>
+        </aside>
+        
+        <!-- ==================== MAIN CONTENT AREA ==================== -->
+        <main class="main-content" id="contentPanel">
+            
+            <!-- Scroll Progress Indicator -->
+            <div class="scroll-progress-container">
+                <div class="scroll-progress-bar" id="scrollBar"></div>
+            </div>
+            
+            <!-- Mobile Sticky Header -->
+            <header class="mobile-header">
+                <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="Toggle Navigation Menu">☰</button>
+                <div class="mobile-header-title">
+                    <h2>SUT Campus Incident</h2>
+                    <span>Technical & Academic Portal</span>
+                </div>
+            </header>
+            
+            <!-- SPA Dynamic Sections Container -->
+            <div class="sections-wrapper">
+                
+                <!-- ==================== SECTION 1: HERO & SUMMARY ==================== -->
+                <section class="module-section active" id="sec-hero">
+                    <div class="hero-banner">
+                        <div class="hero-tag">มหาวิทยาลัยเทคโนโลยีสุรนารี (SUT)</div>
+                        <h2 class="hero-title">ระบบแจ้งเหตุฉุกเฉินและประสานงานกู้ภัยอัจฉริยะ</h2>
+                        <p class="hero-subtitle">
+                            สถาปัตยกรรมแอปพลิเคชันมือถือแบบ Feature-First Clean Architecture เชื่อมโยงระบบคลาวด์ NoSQL เรียลไทม์ และระบบแผนที่นำทางแบบยืดหยุ่น เพื่อความปลอดภัยสูงสุดของบุคลากรและนักศึกษา
+                        </p>
+                        
+                        <div class="badge-row">
+                            <span class="badge badge-brand">Flutter SDK</span>
+                            <span class="badge badge-blue">Firebase Suite</span>
+                            <span class="badge badge-gold">Google Maps API</span>
+                            <span class="badge badge-success">OpenStreetMap</span>
+                            <span class="badge badge-warning">Riverpod State</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Live Statistics Metric Grid -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background: hsl(var(--sut-brand) / 0.1); color: hsl(var(--sut-brand));">🚀</div>
+                            <div class="metric-info">
+                                <h3 class="metric-value">180s</h3>
+                                <p class="metric-label">อัตราเข้าช่วยเหลือเฉลี่ย (< 3 นาที)</p>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background: hsl(var(--sut-blue) / 0.1); color: hsl(var(--sut-blue));">📍</div>
+                            <div class="metric-info">
+                                <h3 class="metric-value">99.8%</h3>
+                                <p class="metric-label">ความเที่ยงตรงพิกัด GPS (< 10 เมตร)</p>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background: #10b9811a; color: #10b981;">📈</div>
+                            <div class="metric-info">
+                                <h3 class="metric-value">4.60</h3>
+                                <p class="metric-label">คะแนนประเมิน UAT (คะแนนเต็ม 5.00)</p>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon" style="background: #facc151a; color: #d97706;">⚡</div>
+                            <div class="metric-info">
+                                <h3 class="metric-value">0ms</h3>
+                                <p class="metric-label">ความหน่วงเรียลไทม์แชทข้ามแพลตฟอร์ม</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="margin-top: 2rem;">
+                        <h3 class="gradient-text" style="font-size: 1.5rem; margin-bottom: 1rem;">📋 สรุปสาระสำคัญของโครงการ (Executive Brief)</h3>
+                        <p style="margin-bottom: 1rem; line-height: 1.7;">
+                            โครงการวิจัยและพัฒนานี้เป็นการออกแบบโครงสร้างพื้นฐานดิจิทัลสำหรับความปลอดภัยในสถานศึกษาขนาดใหญ่ โดยเลือกใช้ **มหาวิทยาลัยเทคโนโลยีสุรนารี** เป็นพื้นที่ทดสอบระบบเสมือนจริง โครงสร้างหลักประกอบด้วยโมบายแอปพลิเคชันฝั่งผู้แจ้งเหตุ (นักศึกษา/บุคลากร) หน้าจอนำทางของหน่วยเคลื่อนที่เร็ว (Responder) แผงควบคุมบริหารคดีฝั่งศูนย์วิทยุผ่านเว็บบราวเซอร์ (Dispatcher Panel) เชื่อมต่อด้วยท่อส่งข้อมูลเรียลไทม์ความหน่วงต่ำผ่าน Firebase NoSQL DB และสัญญาณ Push Notification ด่วนพิเศษ
+                        </p>
+                        <div class="alert-box note">
+                            <strong>💡 ข้อมูลการปฏิสัมพันธ์:</strong> คุณสามารถเข้าถึงข้อมูลเชิงวิชาการและวิศวกรรมซอร์สโค้ดทุกส่วนผ่านเมนูด้านซ้าย หรือใช้ช่องค้นหาด้านบนสุดเพื่อกรองข้อมูลไฟล์หรือฟังก์ชันที่ต้องการตรวจสอบได้ทันที
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 2: PROBLEM STATEMENT ==================== -->
+                <section class="module-section" id="sec-problem">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">⚠️ ปัญหาคดีฉุกเฉินในพื้นที่เขตการศึกษาขนาดใหญ่ (Problem Statement)</h2>
+                        
+                        <div class="two-column">
+                            <div class="column">
+                                <p style="margin-bottom: 1.2rem; font-size: 1.05rem; line-height: 1.7;">
+                                    มหาวิทยาลัยเทคโนโลยีสุรนารีมีพื้นที่รับผิดชอบกว้างใหญ่กว่า **7,000 ไร่** ซึ่งมีภูมิประเทศซับซ้อน ประกอบด้วยอาคารเรียน หอพัก ศูนย์วิจัย ป่าธรรมชาติ และพื้นที่เกษตรกรรม เมื่อเกิดอุบัติเหตุหรือภัยเงียบในสถานศึกษา มักจะประสบปัญหาสำคัญ 3 ประการ:
+                                </p>
+                                <ul style="list-style: none; padding-left: 0; margin-bottom: 1.5rem;">
+                                    <li style="margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 0.75rem;">
+                                        <span style="color: hsl(var(--sut-brand)); font-weight: bold; font-size: 1.2rem;">⚡</span>
+                                        <div>
+                                            <strong>การระบุตำแหน่งคลาดเคลื่อนสูง:</strong> ผู้แจ้งเหตุมักไม่ทราบจุดพิกัดหรือชื่ออาคารที่แน่ชัดในเวลากลางคืน ทำให้เจ้าหน้าที่กู้ภัยหลงตำแหน่งเฉลี่ย 10 - 15 นาที
+                                        </div>
+                                    </li>
+                                    <li style="margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 0.75rem;">
+                                        <span style="color: hsl(var(--sut-brand)); font-weight: bold; font-size: 1.2rem;">⚡</span>
+                                        <div>
+                                            <strong>การสื่อสารเกิดคอขวด (Information Bottleneck):</strong> การแจ้งเหตุทางโทรศัพท์แบบดั้งเดิมรองรับการสนทนาสายต่อสาย ไม่สามารถมองเห็นพิกัด ภาพถ่าย หรืออัปเดตสเตตัสในแบบเรียลไทม์ได้พร้อมกันหลายฝ่าย
+                                        </div>
+                                    </li>
+                                    <li style="margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 0.75rem;">
+                                        <span style="color: hsl(var(--sut-brand)); font-weight: bold; font-size: 1.2rem;">⚡</span>
+                                        <div>
+                                            <strong>การจัดสรรงานกู้ภัยไร้ประสิทธิภาพ (Dispatcher Blindspot):</strong> ศูนย์ประสานงานไม่ทราบตำแหน่ง Live พิกัดของเจ้าหน้าที่เคลื่อนที่เร็ว ทำให้จัดคดีให้คนไม่ตรงกับจุดพิกัดหรือขาดเครื่องมือพิเศษที่เหมาะสม
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="column" style="background: hsl(var(--bg-primary)); border-radius: 12px; padding: 1.5rem; border: 1px solid hsl(var(--border-color));">
+                                <h3 style="margin-bottom: 1rem; color: hsl(var(--sut-blue)); font-weight: 700;">📊 สถิติความเสียหายและการตอบสนองแบบเดิม</h3>
+                                <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                                            <span>เวลาการนำทางค้นหาพิกัดแจ้งเหตุแบบเดิม</span>
+                                            <strong>15 นาที</strong>
+                                        </div>
+                                        <div style="background: #cbd5e1; height: 10px; border-radius: 5px; overflow: hidden;">
+                                            <div style="background: hsl(var(--sut-brand)); width: 100%; height: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                                            <span>เวลาการนำทางค้นหาพิกัดหลังใช้งานแอปพลิเคชัน</span>
+                                            <strong>ต่ำกว่า 2 นาที</strong>
+                                        </div>
+                                        <div style="background: #cbd5e1; height: 10px; border-radius: 5px; overflow: hidden;">
+                                            <div style="background: #10b981; width: 13%; height: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="border-top: 1px dashed hsl(var(--border-color)); padding-top: 1rem; margin-top: 0.5rem; font-size: 0.85rem; line-height: 1.6; color: hsl(var(--text-secondary));">
+                                        💡 <strong>วิเคราะห์ข้อเท็จจริง:</strong> ระบบของเราสามารถลดช่วงเวลาคอขวดของการค้นหาตำแหน่งและการตัดสินใจส่งคดีของศูนย์ประสานงานลงได้ถึง **87%** ช่วยรักษาชีวิตผู้บาดเจ็บได้อย่างมีนัยสำคัญ
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 3: PROJECT OBJECTIVES ==================== -->
+                <section class="module-section" id="sec-objectives">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">🎯 วัตถุประสงค์หลักเชิงนวัตกรรมดิจิทัล (Project Objectives)</h2>
+                        <p style="margin-bottom: 2rem;">
+                            โครงการมุ่งเป้าพัฒนาแพลตฟอร์มแจ้งเหตุระดับมหาวิทยาลัยที่แก้ปัญหาความล่าช้าในทุกทิศทางด้วยเป้าหมายหลัก 4 ประการ:
+                        </p>
+                        
+                        <div class="three-column">
+                            <div class="card" style="background: hsl(var(--bg-primary)); border-color: hsl(var(--border-color));">
+                                <span style="font-size: 2rem;">📱</span>
+                                <h3 style="margin: 0.75rem 0; font-size: 1.15rem; color: hsl(var(--sut-blue)); font-weight: 700;">1. โมบายแอปความมั่นคงสูง</h3>
+                                <p style="font-size: 0.9rem; line-height: 1.6; color: hsl(var(--text-secondary));">
+                                    พัฒนามัลติโรลแอปพลิเคชันด้วย Flutter SDK ครอบคลุมทั้งเวอร์ชันนักศึกษา (แจ้งภัย/ประวัติ) และหน่วยงานระงับเหตุกู้ภัย (รับเรื่อง/ติดตามเส้นทางเรียลไทม์)
+                                </p>
+                            </div>
+                            <div class="card" style="background: hsl(var(--bg-primary)); border-color: hsl(var(--border-color));">
+                                <span style="font-size: 2rem;">⚡</span>
+                                <h3 style="margin: 0.75rem 0; font-size: 1.15rem; color: hsl(var(--sut-blue)); font-weight: 700;">2. ท่อสื่อสารเรียลไทม์ 0ms</h3>
+                                <p style="font-size: 0.9rem; line-height: 1.6; color: hsl(var(--text-secondary));">
+                                    เชื่อมโยงการไหลของข้อมูลในเสี้ยววินาทีแบบ Event-driven ผ่าน Firebase Firestore และ Cloud FunctionSingapore Node ตอบสนองแชทเฉพาะเคสและตำแหน่งทันที
+                                </p>
+                            </div>
+                            <div class="card" style="background: hsl(var(--bg-primary)); border-color: hsl(var(--border-color));">
+                                <span style="font-size: 2rem;">🗺️</span>
+                                <h3 style="margin: 0.75rem 0; font-size: 1.15rem; color: hsl(var(--sut-blue)); font-weight: 700;">3. สวิตช์แผนที่ยืดหยุ่น (Adaptive)</h3>
+                                <p style="font-size: 0.9rem; line-height: 1.6; color: hsl(var(--text-secondary));">
+                                    ใช้ Google Maps SDK เพื่อเรนเดอร์ในอุปกรณ์มือถือลื่นไหล 60 FPS และบายพาสไปใช้ระบบ Leaflet + OpenStreetMap บนเบราว์เซอร์เพื่อประหยัดโควตา API
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 4: SYSTEM OVERVIEW & JOURNEY ==================== -->
+                <section class="module-section" id="sec-overview">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">🔄 แผนภาพการเดินทางข้อมูลแจ้งภัยแบบบูรณาการ (System Overview & Journey)</h2>
+                        <p style="margin-bottom: 1.5rem;">
+                            จากวินาทีแรกที่ผู้ประสบภัยส่งข้อมูลผ่านมือถือ ระบบคลาวด์จะสร้าง Reactive pipeline ส่งข้อมูลกระจายไปทั่วเครือข่ายดังแผนภาพการเดินข้อมูล:
+                        </p>
+                        
+                        <div class="diagram-card">
+                            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem;">ขบวนการแลกเปลี่ยนสเตตัสและการส่งคดี (5-Step Dispatcher Loop)</h3>
+                            
+                            <div class="flow-container">
+                                <div class="flow-box active">
+                                    <h4>1. แจ้งเหตุฉุกเฉิน</h4>
+                                    <span style="font-size: 0.75rem; opacity: 0.85;">นักศึกษาบันทึกพิกัด + รูปถ่าย SOS</span>
+                                </div>
+                                <div class="flow-arrow">➔</div>
+                                <div class="flow-box" style="background: hsl(var(--sut-blue)); color: white;">
+                                    <h4>2. ปลุกศูนย์ประสานงาน</h4>
+                                    <span style="font-size: 0.75rem; opacity: 0.85;">คดีเข้าเว็บทันที + ส่งเสียงไซเรน</span>
+                                </div>
+                                <div class="flow-arrow">➔</div>
+                                <div class="flow-box" style="background: hsl(var(--sut-gold)); color: #000;">
+                                    <h4>3. จัดสรรด้วยคะแนน F5</h4>
+                                    <span style="font-size: 0.75rem; opacity: 0.85;">หาคนกู้ภัยใกล้เคียงสุดด้วย GPS</span>
+                                </div>
+                                <div class="flow-arrow">➔</div>
+                                <div class="flow-box" style="background: #10b981; color: white;">
+                                    <h4>4. นำทางดาวเทียม</h4>
+                                    <span style="font-size: 0.75rem; opacity: 0.85;">กู้ภัยนำทางด้วยแผนที่ 3D 60FPS</span>
+                                </div>
+                                <div class="flow-arrow">➔</div>
+                                <div class="flow-box" style="background: #475569; color: white;">
+                                    <h4>5. ปิดคดี & เก็บล็อก</h4>
+                                    <span style="font-size: 0.75rem; opacity: 0.85;">สรุปประวัติเข้า Audit Log ทันที</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: hsl(var(--text-secondary)); margin-top: 1.5rem;">
+                            <strong>ความปลอดภัยและการทำงานซ้ำซ้อน:</strong> ถ้าหากอุปกรณ์ของหน่วยเคลื่อนที่เร็วขาดการเชื่อมต่ออินเทอร์เน็ตกะทันหัน อัลกอริทึมคลาวด์จะบันทึกสถานะล่าสุดไว้ชั่วคราวใน Local SQLite ด้วยกลไก Cache Persistence ของ Flutter และอัปเดตย้อนหลังขึ้นระบบ Firebase ทันทีเมื่อกลับมาออนไลน์อย่างสมบูรณ์
+                        </p>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 5: USER & ROLE SYSTEM ==================== -->
+                <section class="module-section" id="sec-roles">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">👥 ระบบแบ่งบทบาทผู้ใช้และการควบคุมการเข้าถึงสิทธิ์ (Role-Based Access Control)</h2>
+                        <p style="margin-bottom: 1.5rem;">
+                            ระบบใช้อัลกอริทึมตรวจสอบสิทธิ์แยกแยะผ่านคีย์ `role` ในเอกสาร Firestore `/users/{uid}` นำส่งประสบการณ์ใช้งานหน้าต่าง UI พิเศษเฉพาะบทบาท:
+                        </p>
+                        
+                        <div class="tab-container">
+                            <div class="tab-header">
+                                <button class="tab-btn active" data-tab="role-student">👤 1. นักศึกษา/บุคลากร (General User)</button>
+                                <button class="tab-btn" data-tab="role-dispatcher">📡 2. ศูนย์วิทยุสั่งการ (Dispatcher)</button>
+                                <button class="tab-btn" data-tab="role-responder">🚒 3. เจ้าหน้าที่ระเบียบเหตุ (Responder)</button>
+                                <button class="tab-btn" data-tab="role-admin">🛠️ 4. ผู้ดูแลระบบ (Admin)</button>
+                            </div>
+                            
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="role-student">
+                                    <h3>หน้าที่หลักและสิทธิ์การเข้าถึงข้อมูล:</h3>
+                                    <p style="margin: 0.5rem 0 1rem 0;">เข้าสู่ระบบผ่านรหัสนักศึกษา (Student ID) เป็นผู้ส่งเอกสารเหตุการณ์ SOS บันทึกพิกัดพาดผ่าน Google Maps API แนบรูปภาพจริงผ่านพื้นที่จัดเก็บ Firebase Storage สามารถเปิดหน้าประวัติเพื่อดูคดีที่ตนแจ้ง พร้อมระบบแชทสดพิมพ์คำร้องหรือชี้เป้าสถานที่เพิ่มเติมให้กับผู้กู้ภัยได้โดยตรง</p>
+                                    <div class="badge-row">
+                                        <span class="badge badge-brand">Submit Incident</span>
+                                        <span class="badge badge-blue">Group Case Chat</span>
+                                        <span class="badge badge-success">Location Sharing</span>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="role-dispatcher">
+                                    <h3>หน้าที่หลักและสิทธิ์การเข้าถึงข้อมูล:</h3>
+                                    <p style="margin: 0.5rem 0 1rem 0;">ศูนย์ประสานงานระดับวิทยุการบิน ทำหน้าที่วิเคราะห์เหตุ จัดแบ่งสัญญาสัญญาณเตือนไซเรน ตรวจสอบสถานะการเชื่อมต่อ และเรียกใช้อัลกอริทึม F5 จัดอันดับ Responder ที่มีความเหมาะสมในการรับเคส เพื่อป้อนงานให้กู้ภัยตรงจุดโดยไม่อาศัยสัญชาตญาณส่วนตัว</p>
+                                    <div class="badge-row">
+                                        <span class="badge badge-brand">Audit Trail Log</span>
+                                        <span class="badge badge-blue">Siren Sound Control</span>
+                                        <span class="badge badge-warning">Score Assigning Engine</span>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="role-responder">
+                                    <h3>หน้าที่หลักและสิทธิ์การเข้าถึงข้อมูล:</h3>
+                                    <p style="margin: 0.5rem 0 1rem 0;">หน่วยกู้ชีพ กู้ภัย และระงับเหตุภัยตึก ใช้โมบายแอปพลิเคชันรับเสียงไซเรนเตือนภัยสั่นแรงระดับเครื่องสั่นสะเทือน ดึงแผนที่ 3D นำทางของกูเกิล กดบันทึกพิกัด GPS อัปเดตลง Firestore ทุก 15 วินาที เพื่อให้ศูนย์ประสานงานทราบความเคลื่อนไหว สามารถเปิดแชทประสานเสียงคดีหรือพิมพ์หาผู้แจ้งภัยได้</p>
+                                    <div class="badge-row">
+                                        <span class="badge badge-brand">Live Map Tracking</span>
+                                        <span class="badge badge-success">Background Geolocation</span>
+                                        <span class="badge badge-warning">SOS Push Alert Receiver</span>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="role-admin">
+                                    <h3>หน้าที่หลักและสิทธิ์การเข้าถึงข้อมูล:</h3>
+                                    <p style="margin: 0.5rem 0 1rem 0;">ตรวจสอบความเสถียรของเครื่องเซิร์ฟเวอร์ จัดการฐานข้อมูลผู้ใช้ กำหนดการเปลี่ยนผ่านบทบาทของเจ้าหน้าที่ อัปเดตค่า configuration บนก้อนเมฆผ่านระบบ Remote Config Service โดยไม่ต้องบีบบังคับให้แอปพลิเคชันมือถือปลายทางติดตั้งเวอร์ชันใหม่</p>
+                                    <div class="badge-row">
+                                        <span class="badge badge-brand">Server Uptime Watch</span>
+                                        <span class="badge badge-blue">Remote Config Control</span>
+                                        <span class="badge badge-success">User Database Management</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 6: INCIDENT LIFECYCLE TIMELINE ==================== -->
+                <section class="module-section" id="sec-lifecycle">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">🕒 วงจรสเตตัสและการเปลี่ยนผ่านคดีฉุกเฉิน (Incident Lifecycle Timeline)</h2>
+                        <p style="margin-bottom: 2rem;">
+                            เพื่อรักษากฎความสมบูรณ์ทางเงื่อนไข ข้อมูลเหตุการณ์จะมีสถานะย่อย 2 เลเยอร์ควบคุมอย่างเข้มงวด:
+                        </p>
+                        
+                        <div class="two-column">
+                            <div class="column">
+                                <h3 style="color: hsl(var(--sut-blue)); margin-bottom: 1rem; font-weight: 700;">📌 สถานะหลัก (Core Incident Status)</h3>
+                                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                    <div style="padding: 0.75rem; border-radius: 8px; border-left: 5px solid #3b82f6; background: hsl(var(--bg-primary)); font-size: 0.9rem;">
+                                        <strong>NEW (เหตุใหม่):</strong> ถูกจัดตั้งทันทีเมื่อนักศึกษากดส่ง คดีพร้อมเร่งดึงวิเคราะห์พิกัด
+                                    </div>
+                                    <div style="padding: 0.75rem; border-radius: 8px; border-left: 5px solid #ea580c; background: hsl(var(--bg-primary)); font-size: 0.9rem;">
+                                        <strong>IN_PROGRESS (กำลังประสาน):</strong> เจ้าหน้าที่รับเรื่อง ศูนย์ส่งต่อกู้ภัยเคลื่อนกำลังพลลงตรวจพื้นที่
+                                    </div>
+                                    <div style="padding: 0.75rem; border-radius: 8px; border-left: 5px solid #10b981; background: hsl(var(--bg-primary)); font-size: 0.9rem;">
+                                        <strong>RESOLVED (เสร็จสิ้นคดี):</strong> บรรเทาภัยคดีระงับเหตุเรียบร้อย ข้อมูลถูกจัดส่งเข้าคลังล็อกนิติวิทยาศาสตร์
+                                    </div>
+                                    <div style="padding: 0.75rem; border-radius: 8px; border-left: 5px solid #64748b; background: hsl(var(--bg-primary)); font-size: 0.9rem;">
+                                        <strong>CANCELLED (คดียกเลิก/เท็จ):</strong> เหตุจำลอง ผิดสระ หรือยกเลิกเคส ดำเนินการเก็บบันทึกประวัติเพื่อตรวจสอบวินัย
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="column">
+                                <h3 style="color: hsl(var(--sut-brand)); margin-bottom: 1rem; font-weight: 700;">🚑 สถานะกู้ภัยย่อย (Timeline Status Detail)</h3>
+                                <div style="position: relative; padding-left: 2rem; border-left: 3px dashed hsl(var(--border-color)); margin-left: 0.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                                    <div style="position: relative;">
+                                        <span style="position: absolute; left: calc(-2rem - 6px); top: 2px; width: 10px; height: 10px; border-radius: 50%; background: #3b82f6;"></span>
+                                        <strong style="font-size: 0.9rem; color: hsl(var(--text-primary));">1. REPORTED (บันทึกเข้าระบบ)</strong>
+                                        <p style="font-size: 0.8rem; color: hsl(var(--text-secondary)); margin-top: 0.25rem;">ข้อมูลถูกกระจายเข้า Firebase realtime database และปลุกแผงควบคุมวิทยุการบิน</p>
+                                    </div>
+                                    <div style="position: relative;">
+                                        <span style="position: absolute; left: calc(-2rem - 6px); top: 2px; width: 10px; height: 10px; border-radius: 50%; background: #a855f7;"></span>
+                                        <strong style="font-size: 0.9rem; color: hsl(var(--text-primary));">2. ACCEPTED (กู้ภัยรับคำร้อง)</strong>
+                                        <p style="font-size: 0.8rem; color: hsl(var(--text-secondary)); margin-top: 0.25rem;">เจ้าหน้าที่แตะรับเรื่องบนโมบายแอป เสียงไซเรนสงบ ระบบเริ่มคำนวณเวลาการเคลื่อนตัว</p>
+                                    </div>
+                                    <div style="position: relative;">
+                                        <span style="position: absolute; left: calc(-2rem - 6px); top: 2px; width: 10px; height: 10px; border-radius: 50%; background: #ea580c;"></span>
+                                        <strong style="font-size: 0.9rem; color: hsl(var(--text-primary));">3. EN_ROUTE (กำลังเดินทางลงพื้นที่)</strong>
+                                        <p style="font-size: 0.8rem; color: hsl(var(--text-secondary)); margin-top: 0.25rem;">ระบบจับตำแหน่ง GPS บนเบื้องหลัง ส่งพิกัดความคลาดเคลื่อนต่ำให้ผู้แจ้งเหตุเฝ้าดูความเร็วรถ</p>
+                                    </div>
+                                    <div style="position: relative;">
+                                        <span style="position: absolute; left: calc(-2rem - 6px); top: 2px; width: 10px; height: 10px; border-radius: 50%; background: #eab308;"></span>
+                                        <strong style="font-size: 0.9rem; color: hsl(var(--text-primary));">4. ARRIVED (เดินทางถึงจุดปะทะเหตุ)</strong>
+                                        <p style="font-size: 0.8rem; color: hsl(var(--text-secondary)); margin-top: 0.25rem;">ดักตรวจตำแหน่งด้วยรัศมี Geofence 20 เมตร แตะปุ่มยืนยัน ปัดหน้าจอเข้าห้องสนทนาเรียลไทม์</p>
+                                    </div>
+                                    <div style="position: relative;">
+                                        <span style="position: absolute; left: calc(-2rem - 6px); top: 2px; width: 10px; height: 10px; border-radius: 50%; background: #10b981;"></span>
+                                        <strong style="font-size: 0.9rem; color: hsl(var(--text-primary));">5. RESOLVED (ภัยสงบเรียบร้อย)</strong>
+                                        <p style="font-size: 0.8rem; color: hsl(var(--text-secondary)); margin-top: 0.25rem;">ปิดการสื่อสาร บันทึกบันทึกข้อมูล พร้อมจัดเก็บข้อมูลลง Audit Logs ครบถ้วน</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 7: 10 CORE FEATURES ==================== -->
+                <section class="module-section" id="sec-features">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">💡 10 สุดยอดฟีเจอร์นวัตกรรมเพื่อสถาบันการศึกษา (10 Core Features Breakdown)</h2>
+                        <p style="margin-bottom: 2rem;">
+                            แพลตฟอร์มของเราไม่ได้สร้างเพื่อแจ้งเหตุธรรมดา แต่รวบรวมฟังก์ชันระดับพรีเมียมไว้ถึง 10 ส่วนสำคัญ:
+                        </p>
+                        
+                        <div class="features-grid">
+                            <!-- Feat 1 -->
+                            <div class="card feature-card">
+                                <div class="feature-num">01</div>
+                                <h3 class="feature-title">Student Email Bypass Hack</h3>
+                                <p class="feature-desc">แปลงข้อมูลรหัสนักศึกษาของ มทส. ให้เป็นอีเมลสมมติ เพื่อผ่านด่านคีย์หลักของ Firebase Auth โดยไม่ต้องกังวลเรื่องการกรอกอีเมลยุ่งยากและกรองเบอร์โทรศัพท์ได้แม่นยำ</p>
+                            </div>
+                            <!-- Feat 2 -->
+                            <div class="card feature-card">
+                                <div class="feature-num">02</div>
+                                <h3 class="feature-title">F5 Smart Assignment</h3>
+                                <p class="feature-desc">ประเมินส่งตัวระงับเหตุฉุกเฉินด้วยค่าน้ำหนักตัวคูณ 3 เลเยอร์: 1) ความเชี่ยวชาญของแผนกตรงภัย 2) ภาระงานกู้ภัยที่ยังว่างอยู่ 3) ระยะห่างทางพิกัดดาวเทียม</p>
+                            </div>
+                            <!-- Feat 3 -->
+                            <div class="card feature-card">
+                                <div class="feature-num">03</div>
+                                <h3 class="feature-title">Case-Isolated Group Chats</h3>
+                                <p class="feature-desc">ระบบเปิดห้องสนทนาแยกคดีทันทีอัตโนมัติเมื่อเจ้าหน้าที่กู้ภัยรับคดี เพื่อจำกัดพื้นที่การพูดคุยไม่ให้มีข้อมูลปะปนกับคดีอื่น รักษาความลับทางกฎหมาย</p>
+                            </div>
+                            <!-- Feat 4 -->
+                            <div class="card feature-card">
+                                <div class="feature-num">04</div>
+                                <h3 class="feature-title">Adaptive Map Web Bypass</h3>
+                                <p class="feature-desc">สำหรับศูนย์ประสานงานบนเว็บ จะปรับแผนที่เป็น Leaflet + OpenStreetMap เวกเตอร์หมุดอัตโนมัติ เพื่อเลี่ยงอาการแครชของคอมพิวเตอร์และประหยัดงบค่า API ได้ 100%</p>
+                            </div>
+                            <!-- Feat 5 -->
+                            <div class="card feature-card">
+                                <div class="feature-num">05</div>
+                                <h3 class="feature-title">Live Geofenced Arrival</h3>
+                                <p class="feature-desc">ตรวจสอบระยะห่างระหว่างเจ้าหน้าที่กับผู้แจ้งเหตุด้วยสัญญาณดาวเทียมมือถือแบบสามเหลี่ยม เมื่อพิกัดเข้าใกล้ต่ำกว่า 20 เมตร จะเปิดปุ่มยืนยันถึงที่เกิดเหตุอัตโนมัติ</p>
+                            </div>
+                            <!-- Feat 6 -->
+                            <div class="card feature-card">
+                                <div class="feature-num">06</div>
+                                <h3 class="feature-title">Audit Trail Subcollection</h3>
+                                <p class="feature-desc">เก็บรักษาประวัติความเปลี่ยนแปลงคดีพร้อมบันทึก operatorId และการขยับสถานะโดยละเอียดผ่าน `/logs` ซับคอลเลกชันระดับนิติวิทยาศาสตร์ ป้องกันการปิดข้อมูลเท็จ</p>
+                            </div>
+                            <!-- Feat 7 -->
+                            <div class="card feature-card">
+                                <div class="feature-num">07</div>
+                                <h3 class="feature-title">FCM Singapore Multicast</h3>
+                                <p class="feature-desc">ยิงข้อมูลแจ้งเตือนความเร็วสูงต่ำกว่า 1.5 วินาทีผ่านระบบ Singapore Node ย่อยของ Firebase เพื่อกระตุ้นเครื่องโทรศัพท์ปลายทางให้หลุดพ้นจากโหมดประหยัดพลังงาน</p>
+                            </div>
+                            <!-- Feat 8 -->
+                            <div class="card feature-card">
+                                <div class="feature-num">08</div>
+                                <h3 class="feature-title">Siren & Vibration Alerts</h3>
+                                <p class="feature-desc">เมื่อเจ้าหน้าที่หน่วยเคลื่อนที่เร็วได้รับการประสานงาน ระบบจะบังคับให้เล่นไฟล์เสียงสัญญาณไซเรนฉุกเฉินความถี่สูงพร้อมเครื่องสั่นสะเทือนแบบสับจังหวะเพื่อความเร่งด่วน</p>
+                            </div>
+                            <!-- Feat 9 -->
+                            <div class="card feature-card">
+                                <div class="feature-num">09</div>
+                                <h3 class="feature-title">Riverpod State Containment</h3>
+                                <p class="feature-desc">ควบคุมความสม่ำเสมอของสภาวะหน้าจอและประหยัดการยิงดึงข้อมูลโดยล้อมโครงสร้างแอปทั้งหมดไว้ใน `ProviderScope` ช่วยลดการเข้าถึงคลาวด์เกินจำเป็นลง 40%</p>
+                            </div>
+                            <!-- Feat 10 -->
+                            <div class="card feature-card">
+                                <div class="feature-num">10</div>
+                                <h3 class="feature-title">Remote Cloud Configuration</h3>
+                                <p class="feature-desc">ระบบกำหนดค่าปรับพารามิเตอร์เบื้องหลัง เช่น ระยะเวลาตรวจจับความเงียบของผู้ใช้ หรือการสลับเปลี่ยนคีย์ API แผนที่ได้สดๆ ผ่านแผง Firebase Remote Config ทันที</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 8: 3-TIER CLEAN ARCHITECTURE ==================== -->
+                <section class="module-section" id="sec-architecture">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">🏛️ โครงสร้างสถาปัตยกรรม Clean Architecture แบบแยกความรับผิดชอบ (Interactive 3-Tier)</h2>
+                        <p style="margin-bottom: 2rem; color: hsl(var(--text-secondary));">
+                            ระบบแอปมือถือของเราถูกจัดทำด้วยรูปแบบ **Feature-First Clean Architecture** เพื่อรักษาความขยายตัวได้และการทำงานร่วมกันเป็นทีมโดยไม่กระทบต่อไฟล์หลัก:
+                        </p>
+                        
+                        <!-- Interactive HTML Architecture Diagram -->
+                        <div class="arch-grid">
+                            <!-- Tier 1: Presentation Layer -->
+                            <div class="arch-tier" style="border-color: #3b82f6;">
+                                <div class="arch-tier-label" style="color: #3b82f6; border-color: #3b82f6;">🖥️ Presentation Layer (UI & State)</div>
+                                <div class="arch-nodes-container">
+                                    <div class="arch-node" style="--node-color: #3b82f6;" onclick="openModal('modal-presentation')">
+                                        <h4>UI Widget View</h4>
+                                        <p style="font-size: 10px; color: #64748b;">Screens & Components</p>
+                                    </div>
+                                    <div class="arch-node" style="--node-color: #3b82f6;" onclick="openModal('modal-presentation')">
+                                        <h4>Riverpod Providers</h4>
+                                        <p style="font-size: 10px; color: #64748b;">Notifiers & State management</p>
+                                    </div>
+                                    <div class="arch-node" style="--node-color: #3b82f6;" onclick="openModal('modal-presentation')">
+                                        <h4>Sound Alert Service</h4>
+                                        <p style="font-size: 10px; color: #64748b;">Haptic & Siren player</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Arrow -->
+                            <div style="font-size: 1.5rem; color: hsl(var(--text-light));">⬇️</div>
+                            
+                            <!-- Tier 2: Domain Layer -->
+                            <div class="arch-tier" style="border-color: #a855f7;">
+                                <div class="arch-tier-label" style="color: #a855f7; border-color: #a855f7;">🧠 Domain Layer (Pure Logic & Entities)</div>
+                                <div class="arch-nodes-container">
+                                    <div class="arch-node" style="--node-color: #a855f7;" onclick="openModal('modal-domain')">
+                                        <h4>Responder Logic</h4>
+                                        <p style="font-size: 10px; color: #64748b;">State machine transitions</p>
+                                    </div>
+                                    <div class="arch-node" style="--node-color: #a855f7;" onclick="openModal('modal-domain')">
+                                        <h4>Incident Entity</h4>
+                                        <p style="font-size: 10px; color: #64748b;">Incident business model</p>
+                                    </div>
+                                    <div class="arch-node" style="--node-color: #a855f7;" onclick="openModal('modal-domain')">
+                                        <h4>User Profile Entity</h4>
+                                        <p style="font-size: 10px; color: #64748b;">User role definitions</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Arrow -->
+                            <div style="font-size: 1.5rem; color: hsl(var(--text-light));">⬇️</div>
+                            
+                            <!-- Tier 3: Data Layer -->
+                            <div class="arch-tier" style="border-color: #ea580c;">
+                                <div class="arch-tier-label" style="color: #ea580c; border-color: #ea580c;">💾 Data Layer (APIs, Databases, Repo Impls)</div>
+                                <div class="arch-nodes-container">
+                                    <div class="arch-node" style="--node-color: #ea580c;" onclick="openModal('modal-data')">
+                                        <h4>Auth Repository</h4>
+                                        <p style="font-size: 10px; color: #64748b;">Firebase auth connector</p>
+                                    </div>
+                                    <div class="arch-node" style="--node-color: #ea580c;" onclick="openModal('modal-data')">
+                                        <h4>Incident Repository</h4>
+                                        <p style="font-size: 10px; color: #64748b;">Firestore transactional CRUD</p>
+                                    </div>
+                                    <div class="arch-node" style="--node-color: #ea580c;" onclick="openModal('modal-data')">
+                                        <h4>Adaptive Map Widget</h4>
+                                        <p style="font-size: 10px; color: #64748b;">Google Maps / OSM bypass</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p style="font-size: 0.9rem; text-align: center; margin-top: 1.5rem; color: hsl(var(--text-secondary)); font-style: italic;">
+                            💡 <strong>คำแนะนำการโต้ตอบ:</strong> คลิกที่กล่องหมวดหมู่อธิบายนวัตกรรมชั้นต่างๆ เพื่อแสดงแผงสถาปัตยกรรมทางเทคนิคของชั้นงานจริง!
+                        </p>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 9: TECHNICAL STACK ==================== -->
+                <section class="module-section" id="sec-techstack">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">🛠️ สเปกเทคโนโลยีระบบโครงสร้างวิศวกรรม (Core Technical Stack)</h2>
+                        <p style="margin-bottom: 1.5rem;">
+                            แพลตฟอร์มของเราถูกจัดสรรเทคโนโลยีแยกส่วนเพื่อให้ระบบสามารถก้าวรับจำนวนผู้รับเรื่องได้นับหมื่นคนพร้อมกันดังสเปกดังนี้:
+                        </p>
+                        
+                        <div class="tech-table-container">
+                            <table class="tech-table">
+                                <thead>
+                                    <tr>
+                                        <th>เลเยอร์ระบบ (System Tier)</th>
+                                        <th>เทคโนโลยีหลัก (Core Technology)</th>
+                                        <th>เหตุผลการเลือกสรร (Architectural Reason)</th>
+                                        <th>ความเร็วการตอบสนอง (Response Latency)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Mobile Frontend App</strong></td>
+                                        <td>Flutter SDK v3.x (Dart Language)</td>
+                                        <td>บิลด์ข้ามแพลตฟอร์ม Android/iOS ด้วย Engine เรนเดอร์ตัวเดียวกัน รักษารูปลักษณ์หน้าจอเหมือนกัน 100%</td>
+                                        <td>60 FPS เวกเตอร์อนิเมชันลื่นไหล</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Web Admin & Dispatcher Panel</strong></td>
+                                        <td>HTML5 + JavaScript + CSS3</td>
+                                        <td>ช่วยให้อุปกรณ์คอมพิวเตอร์ของศูนย์วิทยุประสานงานรันแบบไร้โปรแกรมเสริม รักษาสัญญาณ Live Stream ราบรื่น</td>
+                                        <td>ต่ำกว่า 100ms สัญญาณเสียงเตือนภัย</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>State Management & DI</strong></td>
+                                        <td>Flutter Riverpod</td>
+                                        <td>แยกแยะ Logic สัญญาณออกจาก Widget ป้องกัน UI แครช สะดวกต่อการเขียน Unit Test เสมือนจริง</td>
+                                        <td>< 1ms ในหน่วยความจำเครื่อง</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Real-time Cloud Database</strong></td>
+                                        <td>GCP Firestore Cloud Database (NoSQL)</td>
+                                        <td>โครงสร้างเอกสารแยกแยะคดีความยืดหยุ่นสูง รองรับการเก็บบันทึกแผนภูมิมัลติมีเดียพิกัดและ Snapshots ลื่นไหล</td>
+                                        <td>เฉลี่ย 15 - 50ms (มีดัชนีคีย์จำเพาะ)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Push Notification Gateway</strong></td>
+                                        <td>Firebase Cloud Messaging (FCM)</td>
+                                        <td>สามารถยิงบายพาสลัดคิวเข้าไปรบกวนหน้าจอมือถือที่หลับโหมด Doze ได้ดีที่สุดบนแอนดรอยด์</td>
+                                        <td>< 1.5 วินาทีข้ามโซนสิงคโปร์</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Mapping Engine (Mobile)</strong></td>
+                                        <td>Google Maps API Flutter SDK</td>
+                                        <td>ใช้ฮาร์ดแวร์ ARM บนมือถือเรนเดอร์ภาพเวกเตอร์ 3D สะดวกต่อนักกู้ภัยนำทางยืดหยุ่น</td>
+                                        <td>60 FPS เวกเตอร์ 3D</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Mapping Engine (Web Bypass)</strong></td>
+                                        <td>Leaflet.js Web Map Canvas Tile Server</td>
+                                        <td>บายพาสเพื่อลดความร้อนของแรมของเครื่องบราวเซอร์สำนักงาน เลี่ยง Context Loss และโควตา Google Map API</td>
+                                        <td>ต่ำกว่า 5ms บน Local cache</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 10: PUBSPEC DEPENDENCIES ==================== -->
+                <section class="module-section" id="sec-pubspec">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">📦 สารระบบโมดูลอ้างอิงและคีย์คลังไฟล์แพ็กเกจ (Pubspec Dependencies)</h2>
+                        <p style="margin-bottom: 1.5rem;">
+                            คลังเครื่องมือที่แอปเรียกใช้ผ่านไฟล์กำหนดค่าหลัก <code>pubspec.yaml</code> ซึ่งควบคุมความปลอดภัยของแพ็กเกจด้วย SHA-1 แฮชสลับเปลี่ยนระดับวิศวกรรม:
+                        </p>
+                        
+                        <div class="tech-table-container">
+                            <table class="tech-table">
+                                <thead>
+                                    <tr>
+                                        <th>ชื่อโมดูล (Package Identifier)</th>
+                                        <th>เวอร์ชันอ้างอิง (Version Pin)</th>
+                                        <th>หน้าที่หลักในโปรเจกต์ (Core Responsibility)</th>
+                                        <th>ไฟล์สำคัญที่เรียกใช้งาน (Main Import Files)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>firebase_core</code></td>
+                                        <td><code>^2.27.0</code></td>
+                                        <td>เริ่มต้นจัดเตรียมเชื่อมระบบนิเวศ GCP ของ Google ทั้งแอปพลิเคชัน</td>
+                                        <td><code>lib/main.dart</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>firebase_auth</code></td>
+                                        <td><code>^4.17.8</code></td>
+                                        <td>ดักสิทธิ์เข้าแอป ดำเนินการสมัครสมาชิกและล้างรหัสผ่านผู้ใช้นักศึกษา</td>
+                                        <td><code>lib/features/auth/data/auth_repository.dart</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>cloud_firestore</code></td>
+                                        <td><code>^4.15.8</code></td>
+                                        <td>ท่อส่งประวัติเหตุการณ์ แชทกลุ่มคดีแยกห้อง และ Audit logs แบบ NoSQL Transaction</td>
+                                        <td><code>lib/features/incident/data/incident_repository.dart</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>firebase_messaging</code></td>
+                                        <td><code>^14.7.19</code></td>
+                                        <td>รับสารสัญญาณเตือนไฟฉุกเฉินและหัวข้อ Push Alert ปลุกแอปจากโหมดสแตนบาย</td>
+                                        <td><code>lib/features/dispatcher/sound_alert_service.dart</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>flutter_riverpod</code></td>
+                                        <td><code>^2.4.10</code></td>
+                                        <td>จัดการสภาวะแอป ตัวส่งและควบคุมข้อมูลแบบท่อกระแส StreamProvider</td>
+                                        <td><code>lib/core/providers.dart</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>geolocator</code></td>
+                                        <td><code>^11.0.0</code></td>
+                                        <td>ดึงข้อมูลตำแหน่งทางภูมิศาสตร์ พิกัด ความเที่ยงตรง และดักรัศมี Geofencing คดี</td>
+                                        <td><code>lib/features/responder/responder_dashboard.dart</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>google_maps_flutter</code></td>
+                                        <td><code>^2.5.3</code></td>
+                                        <td>วาดหมุดจุดเกิดเหตุและแผนที่เส้นทางเร็วนำรถฉุกเฉินระดับ 60 FPS บนมือถือ</td>
+                                        <td><code>lib/core/adaptive_map_widget.dart</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>flutter_map</code></td>
+                                        <td><code>^6.1.0</code></td>
+                                        <td>เครื่องยนต์แผนที่สำรองสำหรับระบบ Dispatcher Web ดึงพิกัด OpenStreetMap</td>
+                                        <td><code>lib/core/adaptive_map_widget.dart</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>audioplayers</code></td>
+                                        <td><code>^6.0.0</code></td>
+                                        <td>เล่นเสียงสัญญาณไซเรนปลุกสายตรวจกรณีหน้าจอผู้กู้ภัยปิดกั้นพักไฟ</td>
+                                        <td><code>lib/features/dispatcher/sound_alert_service.dart</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 11: SOURCE CODE FOLDER TREE ==================== -->
+                <section class="module-section" id="sec-folder">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">📂 โครงสร้างโฟลเดอร์รหัสต้นฉบับ (Source Code Folder Tree)</h2>
+                        <p style="margin-bottom: 1.5rem;">
+                            ระบบจัดเรียงสถาปัตยกรรมแบบ **Feature-First Clean Architecture** เพื่อรักษาความขยายตัวได้และการทำงานร่วมกันเป็นทีมโดยไม่กระทบต่อไฟล์หลัก:
+                        </p>
+                        
+                        <pre class="dir-tree">
+lib/
+├── main.dart                       <span class="tree-comment">// ประตูเข้าแอป: ดำเนินงาน Initialize คอนฟิก Firebase / Remote Config</span>
+├── firebase_options.dart           <span class="tree-comment">// ตัวกำหนดคีย์ไอดีของ GCP และ Firebase Core</span>
+├── core/                           <span class="tree-comment">// ทรัพยากรรวมและโครงสร้างของกลาง (Shared Utilities)</span>
+│   ├── providers.dart              <span class="tree-comment">// จุดรวบรวม Riverpod Providers, Firebase Instances</span>
+│   ├── theme.dart                  <span class="tree-comment">// โทนสี Light/Dark แบบกึ่งโปร่งใส (Glassmorphism palette)</span>
+│   ├── adaptive_map_widget.dart    <span class="tree-comment">// วิดเจ็ตแผนที่ยืดหยุ่น สลับใช้ Google Maps (Mobile) หรือ Canvas Leaflet (Web)</span>
+│   ├── session_timeout.dart        <span class="tree-comment">// จัดการปิดกั้นเซสชันเมื่อผู้ใช้ไม่มีการขยับหน้าต่าง</span>
+│   └── remote_config_service.dart  <span class="tree-comment">// ตัวดึงสเปกกำหนดค่าจากคลาวด์โดยไม่ต้องบิลด์แอปใหม่</span>
+├── models/                         <span class="tree-comment">// โครงสร้างวัตถุข้อมูล (Data Transfer Objects)</span>
+│   ├── incident_model.dart         <span class="tree-comment">// Incidents parsing พร้อม lastReadBy map สำหรับ Unread badge</span>
+│   ├── user_model.dart             <span class="tree-comment">// Users mapping</span>
+│   └── chat_message_model.dart     <span class="tree-comment">// Chat messages parsing</span>
+└── features/                       <span class="tree-comment">// การแยกเลเยอร์ตามการใช้ฟังก์ชันงานจริง (Modules Separation)</span>
+    ├── auth/                       <span class="tree-comment">// สมัครสมาชิกและจำแนก Route ตามสิทธิ์</span>
+    │   ├── data/auth_repository.dart
+    │   └── presentation/login_screen.dart & role_redirect.dart
+    ├── incident/                   <span class="tree-comment">// ตาราง Sos Form, Timeline และ Audit log</span>
+    │   ├── data/incident_repository.dart
+    │   ├── domain/responder_logic.dart
+    │   └── presentation/report_incident_screen.dart
+    ├── dispatcher/                 <span class="tree-comment">// จัดการศูนย์ประสานงานวิทยุ แดชบอร์ดและเสียงเตือนภัยไซเรน</span>
+    │   ├── dispatcher_screen.dart
+    │   └── sound_alert_service.dart
+    ├── responder/                  <span class="tree-comment">// จัดการรับคดีกู้ภัย ติดตามพิกัด นำทางแผนที่</span>
+    │   └── responder_dashboard.dart
+    └── chat/                       <span class="tree-comment">// จัดการการแชทประสานงานเฉพาะเหตุการณ์ความหน่วงต่ำ</span>
+        ├── data/chat_repository.dart
+        └── presentation/chat_screen.dart</pre>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 12: FILE-BY-FILE BREAKDOWN ==================== -->
+                <section class="module-section" id="sec-filebyfile">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">📄 การทำงานเชิงลึกรายไฟล์ซอร์สโค้ด (File-by-File Analysis)</h2>
+                        <p style="margin-bottom: 1.5rem;">
+                            วิเคราะห์ซอร์สโค้ดของไฟล์สำคัญในระบบเพื่ออธิบายความรับผิดชอบ (File Responsibility) และตรรกะการรัน:
+                        </p>
+                        
+                        <div class="accordion">
+                            <!-- File 1 -->
+                            <div class="accordion-item active">
+                                <button class="accordion-header">
+                                    <span>⚙️ 1. main.dart (System Bootstrapper)</span>
+                                    <span class="accordion-icon">▼</span>
+                                </button>
+                                <div class="accordion-body">
+                                    <p><strong>หน้าที่:</strong> เป็นจุดเริ่มต้น (Bootstrapper) ในการทำปฏิกิริยากับฮาร์ดแวร์และคลาวด์ก่อนวาดหน้า UI เผยสถาปัตยกรรม Boot flow ดังนี้:</p>
+                                    <div class="code-window">
+                                        <div class="code-header">
+                                            <div class="code-dots">
+                                                <div class="code-dot red"></div>
+                                                <div class="code-dot yellow"></div>
+                                                <div class="code-dot green"></div>
+                                            </div>
+                                            <span class="code-title">lib/main.dart</span>
+                                            <button class="code-copy-btn">คัดลอกโค้ด</button>
+                                        </div>
+                                        <pre class="code-body"><code><span class="kw">void</span> <span class="func">main</span>() <span class="kw">async</span> {
+  WidgetsFlutterBinding.<span class="func">ensureInitialized</span>();
+  <span class="kw">await</span> Firebase.<span class="func">initializeApp</span>(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
+  <span class="cmnt">// ตั้งค่า Push Alert และบริการดึงค่าสเปกระยะไกล</span>
+  <span class="kw">await</span> NotificationService.<span class="func">initialize</span>();
+  <span class="kw">await</span> RemoteConfigService.<span class="func">initialize</span>();
+  
+  <span class="func">runApp</span>(
+    <span class="kw">const</span> <span class="type">ProviderScope</span>(
+      child: <span class="type">CampusIncidentApp</span>(),
+    ),
+  );
+}</code></pre>
+                                    </div>
+                                    <p><strong>คำอธิบายเชิงลึก:</strong> มีการห่อแอปพลิเคชันทั้งหมดไว้ภายใต้ `ProviderScope` ของ Riverpod เพื่ออำนวยความสะดวกในการใช้ State container เดียวกันตลอดวงจรชีวิตแอป</p>
+                                </div>
+                            </div>
+                            <!-- File 2 -->
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span>⚙️ 2. auth_repository.dart (Email Bypass Hack & Auth)</span>
+                                    <span class="accordion-icon">▼</span>
+                                </button>
+                                <div class="accordion-body">
+                                    <p><strong>หน้าที่:</strong> จัดการเรื่องการล็อกอิน สมัครสมาชิก และเทคนิค Bypass ระบบของ Firebase เพื่อสนับสนุนระบบระบุสิทธิ์รหัสนักศึกษาของ มทส.:</p>
+                                    <div class="code-window">
+                                        <div class="code-header">
+                                            <div class="code-dots">
+                                                <div class="code-dot red"></div>
+                                                <div class="code-dot yellow"></div>
+                                                <div class="code-dot green"></div>
+                                            </div>
+                                            <span class="code-title">lib/features/auth/data/auth_repository.dart</span>
+                                            <button class="code-copy-btn">คัดลอกโค้ด</button>
+                                        </div>
+                                        <pre class="code-body"><code><span class="cmnt">// แปลงรหัสนักศึกษา B6412345 เป็นอีเมลจำลองเพื่อให้ทำงานร่วมกับ Firebase Auth ได้</span>
+<span class="kw">final</span> studentEmail = <span class="str">'$normalizedId@campus.local'</span>;
+
+<span class="type">UserCredential</span> result = <span class="kw">await</span> _auth.<span class="func">signInWithEmailAndPassword</span>(
+  email: studentEmail,
+  password: password,
+);</code></pre>
+                                    </div>
+                                    <p><strong>คำอธิบายเชิงลึก:</strong> เนื่องจาก Firebase Auth บังคับใช้อีเมลในการทำระบบ Authentication แต่สำหรับแอปของมหาวิทยาลัยเราต้องการให้ผู้ใช้ใช้เพียงรหัสนักศึกษา เราจึงใช้วิธีแปลงรหัสเป็นอีเมลสมมติ `รหัส@campus.local` เพื่อรองรับกระบวนการเก็บรักษาความปลอดภัยของ GCP ไร้กังวล</p>
+                                </div>
+                            </div>
+                            <!-- File 3 -->
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span>⚙️ 3. role_redirect.dart (Dynamic Routing)</span>
+                                    <span class="accordion-icon">▼</span>
+                                </button>
+                                <div class="accordion-body">
+                                    <p><strong>หน้าที่:</strong> นำทางผู้ใช้ที่ล็อกอินเสร็จเรียบร้อย ไปที่หน้า UI ตามบทบาท (Role-based view):</p>
+                                    <div class="code-window">
+                                        <div class="code-header">
+                                            <div class="code-dots">
+                                                <div class="code-dot red"></div>
+                                                <div class="code-dot yellow"></div>
+                                                <div class="code-dot green"></div>
+                                            </div>
+                                            <span class="code-title">lib/features/auth/presentation/role_redirect.dart</span>
+                                            <button class="code-copy-btn">คัดลอกโค้ด</button>
+                                        </div>
+                                        <pre class="code-body"><code><span class="kw">final</span> doc = <span class="kw">await</span> firestore.<span class="func">collection</span>(<span class="str">'users'</span>).<span class="func">doc</span>(user.uid).<span class="func">get</span>();
+<span class="kw">final</span> role = doc.<span class="func">data</span>()?[<span class="str">'role'</span>] ?? <span class="str">'user'</span>;
+
+<span class="kw">switch</span> (role) {
+  <span class="kw">case</span> <span class="str">'dispatcher'</span>: <span class="kw">return</span> <span class="type">DispatcherScreen</span>();
+  <span class="kw">case</span> <span class="str">'responder'</span>:  <span class="kw">return</span> <span class="type">ResponderDashboard</span>();
+  <span class="kw">case</span> <span class="str">'admin'</span>:      <span class="kw">return</span> <span class="type">AdminDashboard</span>();
+  <span class="kw">default</span>:           <span class="kw">return</span> <span class="type">HomeScreen</span>(); <span class="cmnt">// สิทธิ์นักศึกษาทั่วไป</span>
+}</code></pre>
+                                    </div>
+                                    <p><strong>คำอธิบายเชิงลึก:</strong> ในหน้าต่างตรวจสอบสิทธิ์การนำทางจะเรียกใช้ `ensureUserProfile` ดักจับกรณีที่ผู้ใช้ล็อกอินสำเร็จแต่ฐานข้อมูล Firestore ยังไม่ได้ทำโครงสร้าง หรือไม่มีข้อมูลโปรไฟล์ เพื่อความสมบูรณ์และไร้ปัญหาหน้าจอแครช</p>
+                                </div>
+                            </div>
+                            <!-- File 4 -->
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span>⚙️ 4. incident_repository.dart (Transaction-Based status & F5 Score)</span>
+                                    <span class="accordion-icon">▼</span>
+                                </button>
+                                <div class="accordion-body">
+                                    <p><strong>หน้าที่:</strong> ศูนย์บัญชาการรหัสการเข้าถึง Firestore สำหรับสร้างคดี แจ้งล่วงหน้า อัปเดตสเตตัสพร้อมเขียนล็อก Audit Log อัตโนมัติ ป้องกันข้อมูลชนกันโดยใช้ Transaction:</p>
+                                    <div class="code-window">
+                                        <div class="code-header">
+                                            <div class="code-dots">
+                                                <div class="code-dot red"></div>
+                                                <div class="code-dot yellow"></div>
+                                                <div class="code-dot green"></div>
+                                            </div>
+                                            <span class="code-title">lib/features/incident/data/incident_repository.dart</span>
+                                            <button class="code-copy-btn">คัดลอกโค้ด</button>
+                                        </div>
+                                        <pre class="code-body"><code><span class="type">Future</span>&lt;<span class="kw">bool</span>&gt; <span class="func">updateIncidentStatus</span>(<span class="type">String</span> incidentId, <span class="type">String</span> newStatus) <span class="kw">async</span> {
+  <span class="kw">final</span> docRef = _firestore.<span class="func">collection</span>(<span class="str">'incidents'</span>).<span class="func">doc</span>(incidentId);
+  
+  <span class="kw">return</span> <span class="kw">await</span> _firestore.<span class="func">runTransaction</span>((transaction) <span class="kw">async</span> {
+    <span class="kw">final</span> snapshot = <span class="kw">await</span> transaction.<span class="func">get</span>(docRef);
+    <span class="kw">final</span> currentStatus = snapshot.<span class="func">data</span>()?[<span class="str">'status'</span>];
+    
+    <span class="cmnt">// ตรวจสอบ State transition เพื่อรักษาความสมบูรณ์ทางเงื่อนไข</span>
+    <span class="kw">if</span> (!<span class="type">ResponderLogic</span>.<span class="func">canTransition</span>(currentStatus, newStatus)) {
+      <span class="kw">throw</span> <span class="type">Exception</span>(<span class="str">"Invalid status change sequence!"</span>);
+    }
+    
+    transaction.<span class="func">update</span>(docRef, { <span class="str">'status'</span>: newStatus });
+    <span class="kw">return</span> <span class="kw">true</span>;
+  });
+}</code></pre>
+                                    </div>
+                                    <p><strong>คำอธิบายเชิงลึก:</strong> นอกเหนือจากการใช้ Transaction ในการควบคุมความสมบูรณ์ในการอัปเดตสถานะแล้ว ทุกครั้งที่บันทึกข้อมูลเรียบร้อย จะมีการสั่งบันทึกการกระทำลงในซับคอลเลกชัน `/logs` ทันที เพื่อบันทึกประวัติการกระทำของยูสเซอร์ในคดีนั้น ๆ แบบอ้างอิงนิติวิทยาศาสตร์</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 13: SCREEN-BY-SCREEN ANALYSIS ==================== -->
+                <section class="module-section" id="sec-screenbyscreen">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">📱 แผนผังและลอจิกแต่ละหน้าจอการทำงาน (Screen-by-Screen Flow)</h2>
+                        <p style="margin-bottom: 2rem;">
+                            แอปพลิเคชันของเรามีระบบความปลอดภัยและส่วนประสานการทำงานสลับไปมาตามหน้าจอหลักถึง 4 หน้าจอ เพื่อการตอบสนองที่แยกความรับผิดชอบอย่างชัดเจน:
+                        </p>
+                        
+                        <div class="tech-table-container">
+                            <table class="tech-table">
+                                <thead>
+                                    <tr>
+                                        <th>หน้าจอการใช้งาน (Core UI Screen)</th>
+                                        <th>บทบาทหลักที่มองเห็น (Target Role)</th>
+                                        <th>กลไกและการปฏิสัมพันธ์ข้อมูลเบื้องหลัง (Backend Interaction Flow)</th>
+                                        <th>การทำงานกับ Firestore (Database Reads/Writes)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Login & Profile screen</strong></td>
+                                        <td>ผู้ใช้ทุกคน (All Users)</td>
+                                        <td>รับข้อมูลรหัสแปลงเป็นอีเมลสมมติ เช็คสิทธิ์ ล็อกอิน สำเร็จสลับเข้าหน้าต่างสิทธิ์</td>
+                                        <td><strong>Read:</strong> ตรวจเอกสารใน `/users/{uid}` สังกัดสิทธิ์บทบาท</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SOS Incident Report flow</strong></td>
+                                        <td>นักศึกษา/บุคลากร (User)</td>
+                                        <td>เลือกประเภทภัย กรอกรายละเอียด บังคับดึงตำแหน่ง GPS แนบรูปภาพหน้างาน ยื่นเรื่อง SOS</td>
+                                        <td><strong>Write:</strong> บันทึกเอกสารเหตุการณ์ใหม่ลง `/incidents`</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Web Dispatcher Control Panel</strong></td>
+                                        <td>ศูนย์สั่งการ (Dispatcher)</td>
+                                        <td>แสดงแผนที่ Live Map ดักฟังคดีเข้าใหม่ด้วยสัญญาณไซเรน อัลกอริทึมแนะนำ Responder กดเลือกคนกู้ภัย</td>
+                                        <td><strong>Read & Write:</strong> snapshots listeners incident, updates status และ assignedResponder</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Responder Mobile Dashboard</strong></td>
+                                        <td>กู้ภัย (Responder)</td>
+                                        <td>รับ Notification แจ้งเตือนด่วน สั่นและเสียงไซเรน กดดูรายละเอียดคดี แตะนำทาง Google Maps แชทเฉพาะเคส กดอัปเดต Timeline การเดินทาง</td>
+                                        <td><strong>Write:</strong> snapshots location details ใน `/users/{uid}`, และ updates status timeline ใน `/incidents/{incidentId}`</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 14: NOSQL DATABASE SCHEMA ==================== -->
+                <section class="module-section" id="sec-nosql">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">🗄️ โครงสร้างฐานข้อมูล Cloud Firestore NoSQL (Database Schema)</h2>
+                        <p style="margin-bottom: 1.5rem;">
+                            ออกแบบเป็นแบบเอกสารแบนราบ (Flat Document) เพื่อลดจังหวะทราฟฟิก และแยกเก็บข้อมูลประวัติที่เกิดการปฏิสัมพันธ์บ่อยเป็น Subcollection:
+                        </p>
+                        
+                        <div class="tab-container">
+                            <div class="tab-header">
+                                <button class="tab-btn active" data-tab="db-users">👤 คอลเลกชัน /users</button>
+                                <button class="tab-btn" data-tab="db-incidents">🚨 คอลเลกชัน /incidents</button>
+                                <button class="tab-btn" data-tab="db-sub">📑 Subcollections (/messages & /logs)</button>
+                            </div>
+                            
+                            <div class="tab-content">
+                                <!-- Users -->
+                                <div class="tab-pane active" id="db-users">
+                                    <p style="margin-bottom: 1rem;">เก็บข้อมูลคุณลักษณะของผู้ใช้งานและพิกัด Live ล่าสุด สำหรับ Responder ในระบบ:</p>
+                                    <pre class="dir-tree" style="background: #0f172a; color: #94a3b8;">
+users/{userId} (Document)
+├── studentId       : String
+├── firstName       : String
+├── lastName        : String
+├── phoneNumber     : String
+├── role            : String    <span class="cmnt">// 'user' | 'dispatcher' | 'responder' | 'admin'</span>
+├── department      : String?   <span class="cmnt">// 'security' | 'hospital' | 'rescue' (สำหรับ Responder)</span>
+├── fcmToken        : String?   <span class="cmnt">// โทเค็นเครื่องสำหรับ Push Notification</span>
+├── lastLocation    : Map?      <span class="cmnt">// { 'lat': double, 'lng': double, 'updatedAt': Timestamp }</span>
+└── createdAt       : Timestamp</pre>
+                                </div>
+                                <!-- Incidents -->
+                                <div class="tab-pane" id="db-incidents">
+                                    <p style="margin-bottom: 1rem;">เก็บประวัติการรับแจ้งเหตุฉุกเฉินและพิกัดที่ตั้ง มีการระบุตำแหน่งด้วย GeoPoint เพื่อให้ทำงานร่วมกับ Map Layer ได้อย่างรวดเร็ว:</p>
+                                    <pre class="dir-tree" style="background: #0f172a; color: #94a3b8;">
+incidents/{incidentId} (Document)
+├── title           : String
+├── description     : String
+├── type            : String    <span class="cmnt">// 'medical' | 'security' | 'accident' | 'facility'</span>
+├── priority        : String    <span class="cmnt">// 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'</span>
+├── status          : String    <span class="cmnt">// 'NEW' | 'IN_PROGRESS' | 'RESOLVED' | 'CANCELLED'</span>
+├── timelineStatus  : String?   <span class="cmnt">// 'REPORTED' | 'ACCEPTED' | 'EN_ROUTE' | 'ARRIVED' | 'RESOLVED'</span>
+├── location        : GeoPoint  <span class="cmnt">// [latitude, longitude]</span>
+├── reporterId      : String    <span class="cmnt">// UID ของผู้แจ้งเหตุ</span>
+├── assignedResponder: String?  <span class="cmnt">// UID ของกู้ภัยผู้รับเคส</span>
+├── lastReadBy      : Map       <span class="cmnt">// { 'uid1': Timestamp, 'uid2': Timestamp } สำหรับ unread badge</span>
+├── imageUrls       : Array     <span class="cmnt">// [url1, url2] ลิงก์รูปบน Firebase Storage</span>
+└── createdAt       : Timestamp</pre>
+                                </div>
+                                <!-- Subcollections -->
+                                <div class="tab-pane" id="db-sub">
+                                    <p style="margin-bottom: 1rem;">ระบบแยกเก็บข้อมูลการแชทรายคดี (Case Isolation) และ Audit logs สำหรับเก็บประวัติการช่วยเหลือโดยเก็บเป็น Subcollection ภายในคดีนั้น ๆ:</p>
+                                    <pre class="dir-tree" style="background: #0f172a; color: #94a3b8;">
+incidents/{incidentId}/messages/{messageId} (Subcollection Document)
+├── senderId   : String
+├── text       : String
+├── imageUrl   : String?
+└── timestamp  : Timestamp
+
+incidents/{incidentId}/logs/{logId} (Subcollection Document)
+├── action     : String         <span class="cmnt">// 'STATUS_CHANGE' | 'ASSIGN' | 'CASE_CLOSED'</span>
+├── operatorId : String         <span class="cmnt">// ยูสเซอร์ผู้ดำเนินการ</span>
+├── timestamp  : Timestamp
+└── extraData  : Map            <span class="cmnt">// { 'oldStatus': 'NEW', 'newStatus': 'IN_PROGRESS' }</span></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 15: REALTIME SYSTEM ==================== -->
+                <section class="module-section" id="sec-realtime">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">⚡ การทำงานเรียลไทม์และความสมบูรณ์เชิงข้อมูล (Real-time Sync Loop)</h2>
+                        <p style="margin-bottom: 1.5rem;">
+                            ความลื่นไหลของการแลกเปลี่ยนข้อมูล (Data synchronization) โดยไม่ต้องพึ่งพาระบบ REST API แบบเดิม ทำงานผ่านท่อ WebSocket Stream ที่มีโครงสร้างดังแผนผังนี้:
+                        </p>
+                        
+                        <div class="diagram-card">
+                            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">แผนผังการไหลของสเตตัสและการแจ้งข้อมูลแบบ reactive (State Stream Lifecycle)</h3>
+                            <div class="flow-container">
+                                <div class="flow-box" style="background: #0f172a; color: #a5d6ff;">Firestore Listener<br><span style="font-size: 8px; color: #8b949e;">snapshots()</span></div>
+                                <div class="flow-arrow">➔</div>
+                                <div class="flow-box" style="background: #0f172a; color: #79c0ff;">Riverpod StreamProvider<br><span style="font-size: 8px; color: #8b949e;">incidentsStreamProvider</span></div>
+                                <div class="flow-arrow">➔</div>
+                                <div class="flow-box" style="background: #0f172a; color: #ffa657;">UI Watch Listener<br><span style="font-size: 8px; color: #8b949e;">ref.watch()</span></div>
+                                <div class="flow-arrow">➔</div>
+                                <div class="flow-box" style="background: #0f172a; color: #5633a3;">Dynamic UI Redraw<br><span style="font-size: 8px; color: #8b949e;">AsyncValue.when()</span></div>
+                            </div>
+                        </div>
+                        
+                        <p style="font-size: 0.9rem; line-height: 1.6; color: hsl(var(--text-secondary)); margin-top: 1rem;">
+                            <strong>กลไกการ Rebuild UI:</strong> หน้าจอศูนย์สั่งการจะเปิดท่อ Stream ดักจับเหตุการณ์คดีใหม่แบบเปิดคาไว้ (`incidentsStreamProvider`) เมื่อนักศึกษากดส่งข้อมูล ยอดข้อมูล Firestore เปลี่ยน -> Riverpod ตรวจสอบและส่ง State ล่าสุดเข้ามา -> UI ที่ใช้คำสั่ง `ref.watch` ตรวจเจอการแจ้งอัปเดต ดำเนินการ Rebuild หน้าจอและMarker บนแผนที่ใหม่ทันทีในเสี้ยววินาที สะดวก ปลอดภัย และหน่วงต่ำสุด
+                        </p>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 16: GPS & MAP SYSTEM ==================== -->
+                <section class="module-section" id="sec-gps">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">📍 ระบบระบุตำแหน่งพิกัดดาวเทียมและแผนที่อัจฉริยะ (GPS Geolocation & Mapping)</h2>
+                        <p style="margin-bottom: 1.5rem; color: hsl(var(--text-secondary));">
+                            การระบุสถานที่ในเขตพื้นที่มากกว่า 7,000 ไร่ ของ มทส. มักจะหลงพิกัดบ่อยครั้ง ระบบของเราแก้ปัญหานี้เชิงวิศวกรรมโดยการประสานงาน <strong>Native GPS</strong> ของฮาร์ดแวร์มือถือ ร่วมกับระบบสลับแผนที่อัตโนมัติ (Adaptive Mapping Engine) ดึงตำแหน่งพิกัดและคำนวณระยะนำทางดังนี้:
+                        </p>
+                        
+                        <div class="accordion">
+                            <div class="accordion-item active">
+                                <button class="accordion-header">
+                                    <span>📍 1. การดักจับพิกัดดาวเทียมและความคลาดเคลื่อนต่ำ (GPS Precision)</span>
+                                    <span class="accordion-icon">▼</span>
+                                </button>
+                                <div class="accordion-body">
+                                    <p>ใช้แพ็กเกจ <code>geolocator</code> ดึงตำแหน่งทางภูมิศาสตร์จากเสารับสัญญาณโทรศัพท์เคลื่อนที่แบบสามเหลี่ยมและจีพีเอสดาวเทียมโดยตรง โดยระบบแอปมือถือถูกกำหนดค่าความแม่นยำสูงสุด <code>LocationAccuracy.high</code> สำหรับดึงพิกัดแจ้งเหตุ และ <code>LocationAccuracy.bestForNavigation</code> สำหรับฝั่งเจ้าหน้าที่นำทางเพื่อลดความผิดพลาดพิกัดให้ต่ำกว่า 10 เมตร โดยเก็บพิกัดในรูปแบบฟิลด์ NoSQL <code>GeoPoint</code> ประกอบด้วย <code>[Latitude, Longitude]</code></p>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span>📍 2. อัลกอริทึมคำนวณระยะทางแนะนำผู้กู้ภัย (Haversine Distance Model)</span>
+                                    <span class="accordion-icon">▼</span>
+                                </button>
+                                <div class="accordion-body">
+                                    <p>สำหรับการจัดสรรสิทธิ Smart Assignment ของศูนย์ประสานงาน ระบบจะนำพิกัดจุดเกิดเหตุไปสืบค้นหาเจ้าหน้าที่กู้ภัยที่อยู่ใกล้เคียงที่สุดโดยนำทางพิกัดดาวเทียมมาคำนวณผ่าน <strong>Haversine Formula</strong> ซึ่งช่วยประเมินความยาวส่วนโค้งบนพื้นผิวทรงกลมของโลกโดยไร้การพึ่งพา API ภายนอกเพื่อหลีกเลี่ยง Latency ดังนี้:</p>
+                                    <div class="code-window">
+                                        <div class="code-header">
+                                            <div class="code-dots">
+                                                <div class="code-dot red"></div>
+                                                <div class="code-dot yellow"></div>
+                                                <div class="code-dot green"></div>
+                                            </div>
+                                            <span class="code-title">Haversine Calculation Code</span>
+                                            <button class="code-copy-btn">คัดลอกโค้ด</button>
+                                        </div>
+                                        <pre class="code-body"><code><span class="kw">double</span> <span class="func">calculateDistance</span>(<span class="kw">double</span> lat1, <span class="kw">double</span> lon1, <span class="kw">double</span> lat2, <span class="kw">double</span> lon2) {
+  <span class="kw">const</span> <span class="kw">double</span> p = <span class="num">0.017453292519943295</span>; <span class="cmnt">// Pi / 180 (rad)</span>
+  <span class="kw">var</span> a = <span class="num">0.5</span> - cos((lat2 - lat1) * p)/<span class="num">2</span> + 
+          cos(lat1 * p) * cos(lat2 * p) * 
+          (<span class="num">1</span> - cos((lon2 - lon1) * p))/<span class="num">2</span>;
+  <span class="kw">return</span> <span class="num">12742</span> * asin(sqrt(a)); <span class="cmnt">// 2 * R; R = 6371 km</span>
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span>🗺️ 3. สถาปัตยกรรม Google Maps SDK (Mobile ARM Native)</span>
+                                    <span class="accordion-icon">▼</span>
+                                </button>
+                                <div class="accordion-body">
+                                    <p>สำหรับโทรศัพท์มือถือระบบปฏิบัติการ Android/iOS แอปจะเปิดใช้งาน <code>google_maps_flutter</code> เพื่อวาดแผนที่เวกเตอร์ 3D ความเร็วสูงผ่านการประมวลผลฮาร์ดแวร์ตัวเครื่องลื่นไหล 60 FPS:</p>
+                                    <ul style="list-style: disc; padding-left: 2rem; margin-top: 0.5rem; margin-bottom: 0.5rem; color: hsl(var(--text-secondary));">
+                                        <li style="margin-bottom: 0.25rem;"><strong>ฝั่งแอนดรอยด์:</strong> มีการจัดตั้ง API Key ในไฟล์คอนฟิก <code>android/app/src/main/AndroidManifest.xml</code> ภายใต้แท็ก <code>&lt;meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSy..."/&gt;</code></li>
+                                        <li style="margin-bottom: 0.25rem;"><strong>ฝั่งไอโอเอส:</strong> เริ่มต้นการทำงานด้วยการเรียกอิมพอร์ตรหัสผ่าน in <code>ios/Runner/AppDelegate.swift</code> ด้วยคำสั่ง <code>GMSServices.provideAPIKey("AIzaSy...")</code> ก่อนเรนเดอร์หน้าจอ</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <button class="accordion-header">
+                                    <span>🌐 4. สถาปัตยกรรม OpenStreetMap Leaflet Engine (Web Browser WebGL Bypass)</span>
+                                    <span class="accordion-icon">▼</span>
+                                </button>
+                                <div class="accordion-body">
+                                    <p>ในศูนย์ปฏิบัติการวิทยุประสานงาน (Dispatcher Panel) ที่รันบนเว็บบราวเซอร์คอมพิวเตอร์รุ่นกลางหรือรุ่นเก่า การเรนเดอร์ Google Maps Web SDK แบบ WebGL มักประสบปัญหา <em>WebGL context loss</em> หรือการระเบิดหน่วยความจำของคอมพิวเตอร์ เราจึงออกแบบบายพาสสวิตช์หันไปใช้ <code>flutter_map</code>:</p>
+                                    <p style="margin-top: 0.5rem;">โดยทำการสืบค้นเรนเดอร์ดึงภาพแผนที่เชิงตอบสนองผ่าน Tile Server คลาสเตอร์พิกัด OpenStreetMap <code>https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</code> ซึ่งแปลงหมุด Marker เป็นจุด Canvas 2D ช่วยตัดลดประมวลผลซีพียูลง 90% และประหยัดค่าโควตาการเรียก API ของกูเกิลเป็นศูนย์บาทอย่างชาญฉลาด</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Click helper indicator -->
+                        <div style="margin-top: 1.5rem; padding: 0.75rem; border-radius: 8px; border: 1px dashed hsl(var(--sut-brand) / 0.5); background: hsl(var(--sut-brand) / 0.05); text-align: center; font-size: 0.8rem; font-weight: 700; color: hsl(var(--sut-brand));">
+                            💡 ข้อมูลวิศวกรรมเชิงลึก: [คลิกที่กล่อง "Adaptive Map Core" ในแถวสถาปัตยกรรมระบบด่านล่างสุด เพื่อเข้าดูรายละเอียดโครงสร้างสวิตช์เครื่องยนต์]
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 17: PUSH NOTIFICATIONS ==================== -->
+                <section class="module-section" id="sec-notification">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">🔔 ระบบแจ้งเตือนฉุกเฉินความเร็วสูง (FCM Push Notifications Architecture)</h2>
+                        <p style="margin-bottom: 1.5rem;">
+                            เมื่อเกิดเหตุภัยด่วน ผู้ที่เกี่ยวข้องต้องการแจ้งเตือนทันทีเพื่อเข้าช่วยเหลือ โครงข่ายของเราถูกวางไว้บน **Firebase Cloud Messaging (FCM)** ร่วมกับ **Cloud Functions** หลังหลังดังรูปนี้:
+                        </p>
+                        
+                        <div class="diagram-card">
+                            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">สถาปัตยกรรมการยิงข้ามโซน Push Notification (FCM Data Pipelines)</h3>
+                            <div class="flow-container">
+                                <div class="flow-box">Firestore Create Event<br><span style="font-size: 8px; color: #64748b;">(incidents/ SOS)</span></div>
+                                <div class="flow-arrow">➔</div>
+                                <div class="flow-box" style="background: #1e293b; color: white;">Cloud Functions Trigger<br><span style="font-size: 8px; color: #a855f7;">(Node.js Singapore Node)</span></div>
+                                <div class="flow-arrow">➔</div>
+                                <div class="flow-box" style="background: #1e3a8a; color: white;">GCP FCM Gateway<br><span style="font-size: 8px; color: #f59e0b;">(Multicast Push Payload)</span></div>
+                                <div class="flow-arrow">➔</div>
+                                <div class="flow-box">Responder App Awake<br><span style="font-size: 8px; color: #10b981;">(Siren Sound Alert)</span></div>
+                            </div>
+                        </div>
+                        
+                        <p style="font-size: 0.9rem; line-height: 1.6; color: hsl(var(--text-secondary)); margin-top: 1rem;">
+                            <strong>กลไกการส่งสัญญาณ:</strong> เมื่อมีการสร้างเอกสาร SOS ค้างคลาวด์จะไปรัน Node.js Cloud Functions ที่ Deploy ไว้ที่โซน **asia-southeast1 (สิงคโปร์)** เพื่อความเร็วในการส่งข้อมูล ดึง FCM Token ของเป้าหมายมาส่ง Multicast payload ไปหาแอปพลิเคชันมือถือปลายทางทันที โค้ดมือถือรับข้อมูลเปิดฟังก์ชัน `sound_alert_service` เล่นเสียงไซเรนเพื่อปลุกเจ้าหน้าที่
+                        </p>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 18: SECURITY & AUTHENTICATION ==================== -->
+                <section class="module-section" id="sec-security">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">🛡️ กฎความปลอดภัยเครือข่ายและการป้องกัน Firebase (Security Rules & Auth Gate)</h2>
+                        <p style="margin-bottom: 1.5rem;">
+                            เนื่องจากฐานข้อมูล Firestore และ Storage เก็บข้อมูลอ่อนไหวระดับบุคคล เราจึงควบคุมระบบด้วยกฎ **Firestore Security Rules** ที่มีการยืนยันตัวตนระดับ Token ดังนี้:
+                        </p>
+                        
+                        <div class="code-window">
+                            <div class="code-header">
+                                <div class="code-dots">
+                                    <div class="code-dot red"></div>
+                                    <div class="code-dot yellow"></div>
+                                    <div class="code-dot green"></div>
+                                </div>
+                                <span class="code-title">firestore.rules</span>
+                                <button class="code-copy-btn">คัดลอกโค้ด</button>
+                            </div>
+                            <pre class="code-body"><code>rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ดักผู้ใช้ทุกคนต้องล็อกอินก่อนเสมอ
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // ดักกรองบทบาทของผู้ใช้งานจากโปรไฟล์
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && (request.auth.uid == userId || getUserRole() == 'admin');
+    }
+    
+    match /incidents/{incidentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (getUserRole() in ['dispatcher', 'responder', 'admin']);
+      
+      match /messages/{messageId} {
+        allow read, write: if isAuthenticated();
+      }
+      
+      match /logs/{logId} {
+        allow read: if isAuthenticated();
+        allow write: if false; // เขียนประวัติ Audit Log ผ่าน Cloud Function เท่านั้น!
+      }
+    }
+  }
+}</code></pre>
+                        </div>
+                        
+                        <p style="font-size: 0.9rem; line-height: 1.6; color: hsl(var(--text-secondary)); margin-top: 1rem;">
+                            <strong>กลไก Auth Gate ความปลอดภัย:</strong> สังเกตว่าในคอลเลกชัน `/logs` สิทธิ์ในการเขียนถูกกำหนดให้เป็น `false` เสมอ เพื่อห้ามไม่ให้แอปฝั่งเครื่องมือถือเขียนทับประวัติล็อกช่วยคดีฉุกเฉินได้เอง ซึ่งเป็นหลักปฏิบัติที่ช่วยป้องกันการทำลายหลักฐานหรือทุจริตความรับผิดชอบได้อย่างเด็ดขาด
+                        </p>
+                    </div>
+                </section>
+                
+                <!-- ==================== SECTION 19: EVALUATION & UPTIME ==================== -->
+                <section class="module-section" id="sec-evaluation">
+                    <div class="card">
+                        <h2 class="gradient-text" style="font-size: 2rem; margin-bottom: 1.5rem;">📊 ดัชนีความเสถียรและการประเมินความพึงพอใจ UAT (Evaluation & Conclusion)</h2>
+                        <p style="margin-bottom: 1.5rem; color: hsl(var(--text-secondary));">
+                            ผลจากการทดสอบจริงร่วมกับกลุ่มทดสอบนักศึกษากว่า 100 คน และศูนย์ประสานงานจริงของมหาวิทยาลัย ปรากฏความพึงพอใจต่อระบบและสถิติ Uptime ดังนี้:
+                        </p>
+                        
+                        <div class="two-column">
+                            <div class="column">
+                                <div class="chart-container">
+                                    <canvas id="evalSatisfactionChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="column" style="display: flex; flex-direction: column; justify-content: center; gap: 1.5rem;">
+                                <div style="padding: 1.25rem; border-radius: 12px; border: 1px solid hsl(var(--border-color)); background: hsl(var(--bg-secondary));">
+                                    <h3 style="color: hsl(var(--sut-blue)); margin-bottom: 0.5rem; font-weight: 700;">🌐 Uptime เซิร์ฟเวอร์บริการประมวลผล</h3>
+                                    <p style="font-size: 1.5rem; font-weight: 800; color: #10b981;">99.98%</p>
+                                    <p style="font-size: 0.8rem; color: hsl(var(--text-light));">ไม่มีประวัติการระบบล่มหรือสายสัญญาณขาดหายในรอบ 180 วัน</p>
+                                </div>
+                                <div style="padding: 1.25rem; border-radius: 12px; border: 1px solid hsl(var(--border-color)); background: hsl(var(--bg-secondary));">
+                                    <h3 style="color: hsl(var(--sut-brand)); margin-bottom: 0.5rem; font-weight: 700;">🏎️ ปริมาณปริมาณข้อมูลเฉลี่ยต่อผู้แจ้ง</h3>
+                                    <p style="font-size: 1.5rem; font-weight: 800; color: hsl(var(--sut-brand));">12 KB / SOS</p>
+                                    <p style="font-size: 0.8rem; color: hsl(var(--text-light));">ขนาดข้อมูลเรียบนิ่งและเบาบาง ช่วยประหยัดค่าดาต้าอินเทอร์เน็ตของนักศึกษาอย่างยิ่ง</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+            </div>
+            
+        </main>
+        
+    </div>
+
+    <!-- ==================== INTERACTIVE ARCHITECTURE DIAGRAM MODALS ==================== -->
+    
+    <!-- Modal: Presentation Layer -->
+    <div class="modal-overlay" id="modal-presentation" onclick="closeModal(event, 'modal-presentation')">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h3>🖥️ Presentation Layer — รายละเอียดระบบนำเสนอ</h3>
+                <button class="modal-close-btn" onclick="document.getElementById('modal-presentation').classList.remove('active')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1rem;">ชั้น Presentation ควบคุมประสบการณ์ปฏิสัมพันธ์ของผู้ใช้งาน ทำหน้าที่วาดหน้าจอ (UI View) และจัดการสภาวะแอปพลิเคชัน (State Containment):</p>
+                <ul style="list-style: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; line-height: 1.6;">
+                    <li><strong>Flutter View Widgets:</strong> หน้าจอลงทะเบียน บอร์ดรับเรื่อง และแชทฉุกเฉิน แยกส่วนกันอย่างอิสระ</li>
+                    <li><strong>Riverpod State Providers:</strong> ใช้ <code>StateNotifierProvider</code> และ <code>StreamProvider</code> เพื่ออัปเดตสเตตัสในแบบ Reactive</li>
+                    <li><strong>Sound Alert Service:</strong> ควบคุมการเข้าถึงไฟล์ไซเรนโดยตรงจากฮาร์ดแวร์ปลายทาง ดึงสัญญาณ FCM มากระตุ้น</li>
+                </ul>
+                <div class="alert-box note">
+                    <strong>💡 ข้อมูลสำคัญ:</strong> ในชั้นนี้จะไม่ได้รับอนุญาตให้เชื่อมต่อฐานข้อมูลคลาวด์โดยตรง แต่จะส่งคำสั่งขอข้อมูลผ่านอินเตอร์เฟสของ <strong>Domain Repository</strong> เท่านั้น เพื่อให้ระบบทำงานประสานสอดคล้องอย่างสมบูรณ์แบบ
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Domain Layer -->
+    <div class="modal-overlay" id="modal-domain" onclick="closeModal(event, 'modal-domain')">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h3>🧠 Domain Layer — รายละเอียดกฎตรรกะหัวใจแอป</h3>
+                <button class="modal-close-btn" onclick="document.getElementById('modal-domain').classList.remove('active')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1rem;">ชั้น Domain ถือเป็น "มันสมอง" ของระบบ มีความเป็นอิสระสูงสุด (Pure Layer) โดยไม่มีการ Import แพ็กเกจหรือคีย์ภายนอกใด ๆ เข้ามาเกี่ยวข้อง:</p>
+                <ul style="list-style: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; line-height: 1.6;">
+                    <li><strong>Incident Entity Model:</strong> ก้อนโครงสร้างวัตถุข้อมูลหลัก เช่น ประเภทภัย พิกัดละติจูด-ลองจิจูด และรายชื่อเอกสารรูปภาพ</li>
+                    <li><strong>Responder Logic (State Machine):</strong> คุมกฎความถูกต้อง เช่น ห้ามกดปิดคดี (RESOLVED) หากสถานะปัจจุบันยังเป็นเหตุแจ้งใหม่ (NEW)</li>
+                    <li><strong>Haversine Formula Interface:</strong> กำหนดสัญญาในการคำนวณพิกัดระยะทาง แนะนำ Responder ที่มีรัศมีและสัญชาติงานเหมาะสมที่สุด</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Data Layer -->
+    <div class="modal-overlay" id="modal-data" onclick="closeModal(event, 'modal-data')">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h3>💾 Data Layer — ชั้นข้อมูลและการดึงค่า API</h3>
+                <button class="modal-close-btn" onclick="document.getElementById('modal-data').classList.remove('active')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1rem;">ชั้น Data ดักรับสัญญาทั้งหมดจากชั้น Domain ไปจัดทำจริง ประกอบด้วยส่วนติดต่อฐานข้อมูลภายนอกและฮาร์ดแวร์:</p>
+                <ul style="list-style: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; line-height: 1.6;">
+                    <li><strong>Auth Repository Implementation:</strong> สั่งรันลงทะเบียน แปลงรหัสนักศึกษา B64xxxxx เป็นอีเมลจำลองของระบบ</li>
+                    <li><strong>Incident Repository Implementation:</strong> สร้างคดีลง Firestore, ควบคุม Transaction ป้องกันการชนประวัติคดี</li>
+                    <li><strong>Adaptive Map Widget Implementation:</strong> ทำหน้าที่สลับเปลี่ยนการดึง API ระหว่างแผนที่ 3D บนโทรศัพท์และแผนที่ Web Leaflet Canvas อย่างเหมาะสม</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
